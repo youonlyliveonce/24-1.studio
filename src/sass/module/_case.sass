@@ -1,0 +1,192 @@
+.Case
+	background-color: $color-background
+	position: relative
+	overflow: hidden
+	.Videobox__background
+		width: 100%
+		position: relative
+		top: inherit
+		left: inherit
+		+transform(translateX(0) translateY(0))
+		iframe
+			position: absolute
+			top: 0
+			left: 0
+			width: 100%
+			height: 100%
+			display: block
+			border: 0
+	&__body
+		@extend .Section__body--small
+		padding-top: 80px
+		padding-bottom: $gap-size-large*2
+	&__image
+		padding: 0 10px
+		img
+			width: 100%
+	&__slideshow
+		position: relative
+		.swiper-button-next
+			&:hover
+				right: 5px
+			right: 0px
+			+transform(translateX(100%))
+
+		.swiper-button-prev
+			&:hover
+				left: 5px
+			background-position: 90% 50%
+			left: 0px
+			+transform(translateX(-100%))
+
+	&__info
+		margin: 10px 0
+		height: 120px
+		position: relative
+		text-align: center
+
+		&:after
+			position: absolute
+			content: ''
+			width: 1px
+			background-color: white
+			height: 90px
+			bottom: 0
+			left: 50%
+			opacity: 0.5
+		&:before
+			+fontbold
+			font-size: 0.75em
+			content: 'INFO'
+			position: relative
+			width: 100%
+			color: white
+	&__back
+		position: relative
+		text-align: center
+		margin-top: 60px
+		a
+			+noselect
+			color: black
+			display: inline-block
+			background-color: white
+			padding: 10px 15px
+			position: relative
+			+fontserifbold
+			font-style: italic
+			text-transform: uppercase
+			&:after
+				position: absolute
+				content: ''
+				background-color: black
+				left: 0%
+				top: 50%
+				width: 100%
+				height: 0%
+				z-index: 0
+				+transition(all, 0.25s)
+			&:hover
+				&:after
+					top: 0
+					height: 100%
+				span
+					color: white
+					&::after
+						background-color: white
+						// left: 100%
+						// width: 0%
+						height: 4px
+						bottom: -10px
+
+			span
+				z-index: 2
+				display: inline-block
+				position: relative
+				&::after
+					+transition(all, 0.15s)
+					content: ''
+					position: absolute
+					left: 0
+					bottom: 3px
+					background-color: black
+					width: 100%
+					height: 2px
+
+	&__intro
+		overflow: hidden
+		padding: 0 10px
+		+clearfix
+		div
+			position: relative
+			// padding: $gap-size-large 0
+			float: left
+			+bp('large')
+				&:first-child
+					width: 65%
+				&:last-child
+					width: 35%
+		color: white
+		h1
+			padding-right: 40px
+			font-size: 50px
+			+bp(large)
+				font-size: 65px
+			+bp(huge)
+				font-size: 80px
+			line-height: 1.2
+			word-wrap: break-word
+		h2
+			+fontserifbold
+			font-size: 1.4em
+			letter-spacing: 0
+			font-style: italic
+			margin-top: 0.45em
+			margin-bottom: 1em
+		p
+			+fontserif
+			letter-spacing: 0.03em
+	&__board
+		padding: $gap-size-large 0
+		iframe
+			position: relative
+			top: 0
+			left: 0
+			width: 100%
+			height: 100%
+			display: block
+			border: 0
+		+bp(medium)
+			+clearfix()
+
+	&__item
+		width: 100%
+		line-height: 0
+		position: relative
+		color: white
+		figcaption
+			display: block
+			position: absolute
+			left: 10px
+			bottom: 10px
+			padding: 10px 20px
+			background-color: black
+			color: white
+			line-height: 1.7em
+		>div
+			position: relative
+			padding: 10px
+			>div
+				padding-bottom: 100%
+				article
+					position: absolute
+					padding: 40px
+					top: 0%
+					// +transform(translateY(-50%))
+		img
+			width: 100%
+		+bp(medium)
+			float: left
+			width: 50%
+		&--first
+			+bp(medium)
+				width: 100%

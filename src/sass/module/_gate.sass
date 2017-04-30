@@ -1,0 +1,107 @@
+.Gate
+	&__body
+		position: absolute
+		top: 25%
+		+bp(small)
+			top: 20%
+		+bp(medium)
+			top: 25%
+		left: 50%
+		width: 80%
+		+transform(translateX(-50%))
+		margin: 0
+		text-align: center
+	&__logo
+		text-align: center
+		position: relative
+		height: $logo-height
+		margin-bottom: 50px
+		svg
+			height: $logo-height
+		+bp(huge)
+			height: 1.5*$logo-height-large
+			svg
+				height: 1.5*$logo-height-large
+	&__linkbar
+		position: relative
+		margin-bottom: 50px
+		span
+			display: inline-block
+			color: black
+			font-size: 0.7em
+			margin-bottom: 10px
+
+		ul
+			+bp(small)
+				width: 100%
+			+bp(medium)
+				width: 80%
+			+bp(large)
+				width: 80%
+			margin: 0 auto
+			position: relative
+			li
+				display: inline-block
+				line-height: 30px
+				+bp(small)
+					width: 45%
+				a
+					display: inline
+					line-height: 30px
+					+transition(opacity, 0.45s)
+					&:hover
+						opacity: 0.5
+					img
+						width: auto
+						height: 20px
+						+bp(huge)
+							height: 30px
+				+bp(small)
+					&:last-child
+						text-align: left
+						padding-left: 20px
+					&:first-child
+						text-align: right
+						padding-right: 20px
+						+bp(small)
+							&::after
+								position: absolute
+								content: ''
+								right: 50%
+								top: 0
+								width: 1px
+								background-color: black
+								display: inline-block
+								height: 20px
+								+bp(huge)
+									height: 30px
+	&__copy
+		opacity: 0
+		line-height: 0
+		height: 0px
+		transition: all 0.3s
+		.photo &
+			&--photo
+				transition: all 1.3s
+				opacity: 1
+		.cine &
+			&--cine
+				transition: all 1.3s
+				opacity: 1
+		&::before
+			content: ''
+			display: inline-block
+			height: 1px
+			width: 20px
+			background-color: black
+			margin: 0
+			padding: 0
+		p
+			padding-top: 50px
+			position: absolute
+			left: 50%
+			transform: translateX(-50%)
+			color: black
+			+fontserifbold
+			font-size: 1.5em
+			line-height: 1.4

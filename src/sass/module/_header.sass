@@ -1,0 +1,52 @@
+.Navigation--show
+	// .Header
+	// 	height: 100%
+.Page--single
+	.Header
+		&__logo
+			width: 80px
+			height: 80px
+			a
+				svg:first-child
+					display: block
+					width: 80px
+					height: 80px
+				svg:last-child
+					display: none
+
+.Header
+	+bp(large)
+		position: initial
+		top: auto
+		left: auto
+		width: auto
+	&__body
+
+	&__logo
+		position: absolute
+		top: 0em
+		left: 0
+		margin: 0
+		width: $logo-height
+		height: $logo-height
+		svg
+			height: $logo-height
+		+bp('large')
+			opacity: 0
+			width: $logo-height-large
+			height: $logo-height-large
+			svg
+				height: $logo-height-large
+		+bp('larger')
+			opacity: 0
+			width: $logo-height-larger
+			height: $logo-height-larger
+			svg
+				height: $logo-height-larger
+		letter-spacing: 0.1em
+		text-transform: uppercase
+		z-index: 2
+		a
+			display: block
+			svg:first-child
+				display: none

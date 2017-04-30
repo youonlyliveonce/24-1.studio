@@ -1,0 +1,131 @@
+.Page--single
+	.Scrollnavigation
+		right: -16px
+
+.run
+	.Page--single
+		.Scrollnavigation
+			right: -16px
+.run
+	.Page--multi
+		.Scrollnavigation
+			right: 0px
+
+.Scrollnavigation
+	display: none
+	+bp(large)
+		.desktop &
+			+transition(right, 0.5s, ease-out, 1s)
+			display: block
+			position: absolute
+			right: -16px
+			top: 0
+			bottom: 0
+			width: 16px
+			height: 100%
+			background-color: black
+			z-index: 5
+			ul
+				position: absolute
+				top: 50%
+				+transform(translateY(-50%))
+				li
+					display: block
+					position: relative
+					width: 6px
+					height: 20px
+					margin: 4px
+					background-color: lighten($color-background, 10%)
+					overflow: visible
+					cursor: pointer
+					+transition(all, 0.15s)
+					&:hover
+						background-color: lighten($color-background, 50%)
+						a
+							span
+								opacity: 1
+								visibility: visible
+								+transform(translateX(-100%) translateY(-50%))
+					&.active
+						background-color: white
+						a
+							span
+								animation: scrollnavitem 2s 1 ease
+								-webkit-animation: scrollnavitem 2s 1 ease
+								-moz-animation: scrollnavitem 2s 1 ease
+								-o-animation: scrollnavitem 2s 1 ease
+					&.Scrollnavigation__item--large
+						height: 40px
+						a
+							line-height: 40px
+					a
+						display: block
+						width: 100%
+						height: 100%
+						span
+							+transition(all, 0.25s)
+							opacity: 0
+							visibility: hidden
+							top: 50%
+							// background-color: lighten($color-background, 10%)
+							+fontbold()
+							+noselect
+							line-height: 1
+							text-transform: uppercase
+							font-size: 0.75em
+							padding: 6px 10px 2px 10px
+							+transform(translateX(-120%) translateY(-50%))
+							position: absolute
+
+@keyframes scrollnavitem
+	0%
+		visibility: visible
+		opacity: 1
+		+transform(translateX(-100%) translateY(-50%))
+	50%
+		visibility: visible
+		opacity: 1
+		+transform(translateX(-100%) translateY(-50%))
+	100%
+		visibility: visible
+		opacity: 0
+		+transform(translateX(-120%) translateY(-50%))
+@-webkit-keyframes scrollnavitem
+	0%
+		visibility: visible
+		opacity: 1
+		+transform(translateX(-100%) translateY(-50%))
+	50%
+		visibility: visible
+		opacity: 1
+		+transform(translateX(-100%) translateY(-50%))
+	100%
+		visibility: visible
+		opacity: 0
+		+transform(translateX(-120%) translateY(-50%))
+@-moz-keyframes scrollnavitem
+	0%
+		visibility: visible
+		opacity: 1
+		+transform(translateX(-100%) translateY(-50%))
+	50%
+		visibility: visible
+		opacity: 1
+		+transform(translateX(-100%) translateY(-50%))
+	100%
+		visibility: visible
+		opacity: 0
+		+transform(translateX(-120%) translateY(-50%))
+@-o-keyframes scrollnavitem
+	0%
+		visibility: visible
+		opacity: 1
+		+transform(translateX(-100%) translateY(-50%))
+	50%
+		visibility: visible
+		opacity: 1
+		+transform(translateX(-100%) translateY(-50%))
+	100%
+		visibility: visible
+		opacity: 0
+		+transform(translateX(-120%) translateY(-50%))

@@ -1,0 +1,58 @@
+.Section
+	&__body
+		position: relative
+		max-width: $max-size
+		padding: 0 $gap-size-large
+		margin: 0 auto
+		+clearfix()
+	&__body--small
+		position: relative
+		max-width: $max-size - 420
+		padding: 0
+		margin: 0 auto
+		+clearfix()
+		+bp('large')
+			padding: 0 80px
+		+bp('hugest')
+			max-width: $max-size + 260
+	&__headline
+		+fontserifbold
+		color: white
+		width: 100%
+		line-height: $logo-height
+		font-size: 1.2em
+		text-transform: uppercase
+		font-weight: 600
+		text-align: center
+		position: relative
+		span
+			position: relative
+			display: inline-block
+			padding: 10px
+			line-height: 1
+			background-color: transparent
+			z-index: 10
+		&::before
+			content: ''
+			display: none
+			position: absolute
+			width: 1px
+			background-color: white
+			opacity: 0.1
+			top: 0%
+			height: 50%
+			left: 50%
+		&::after
+			content: ''
+			display: block
+			position: absolute
+			bottom: 0%
+			width: 1px
+			background-color: white
+			opacity: 0.5
+			height: 50%
+			left: 50%
+			margin-bottom: -10px
+		+bp(large)
+			.desktop &
+				display: none

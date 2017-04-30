@@ -1,0 +1,100 @@
+.Contentnavigation
+	&.open
+		.Button--contentnavi
+			opacity: 0
+			visibility: hidden
+		.Contentnavigation
+			&__background
+				top: 0%
+				bottom: 0%
+				visibility: visible
+				+transition(all, 0.75s, cubic-bezier(0.000, 0.000, 0.000, 1.005), 0.35s)
+			&__body
+				opacity: 1
+				visibility: visible
+				+transform(translateY(0px))
+				+transition(all, 0.75s, cubic-bezier(0.000, 0.000, 0.000, 1.005), 1s)
+	&__background
+		position: absolute
+		left: 0%
+		right: 0%
+		top: 50%
+		bottom: 50%
+		width: 100%
+		background-color: rgba(0,0,0,0.75)
+		z-index: 500
+		visibility: hidden
+		+transition(all, 0.75s, cubic-bezier(0.000, 0.000, 0.000, 1.005), 0.75s)
+	&__body
+		left: 0
+		top: 50%
+		width: 100%
+		height: 0px
+		position: absolute
+		z-index: 503
+		opacity: 0
+		visibility: hidden
+		+transform(translateY(20px))
+		+transition(all, 0.75s, cubic-bezier(0.000, 0.000, 0.000, 1.005))
+		ul
+			padding: 10px
+			margin: 0 auto
+			width: 100%
+			text-align: center
+			background-color: black
+			+bp(large)
+				padding: 38px 80px
+			+transform(translateY(-50%))
+			li
+				display: inline-block
+				margin: 10px 10px 0 10px
+				color: white
+				text-align: left
+				text-transform: uppercase
+				font-size: 0.65em
+				line-height: 2em
+				cursor: pointer
+				+transition(opacity, 0.75s)
+				+bp(large)
+					line-height: 2.5em
+					font-size: 0.85em
+				&:hover
+					opacity: 0.75
+				span
+					display: block
+					position: relative
+					line-height: 0
+					img
+						position: relative
+						z-index: 2
+						width: 120px
+						+bp(large)
+							width: auto
+					&:after,
+					&:before
+						top: 0%
+						left: 0%
+						bottom: 0%
+						right: 0%
+						content: ''
+						margin: -2px
+						position: absolute
+						background-color: white
+						display: block
+						+transition(all, 0.75s, cubic-bezier(0.000, 0.000, 0.000, 1.005))
+					&:before
+						top: 55%
+						bottom: 55%
+						z-index: 1
+					&:after
+						left: 55%
+						right: 55%
+						z-index: 0
+				&.active
+					span
+						&:before
+							top: 0
+							bottom: 0
+						&:after
+							left: 0
+							right: 0

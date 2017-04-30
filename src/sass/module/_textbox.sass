@@ -1,0 +1,87 @@
+.Textbox
+	color: white
+	z-index: 103
+	position: absolute
+	top: 100%
+	overflow: auto
+	-webkit-overflow-scrolling: touch
+	+bp(large)
+		top: 20%
+		left: 55%
+		width: 37%
+		height: 60%
+		.desktop &
+			overflow: hidden
+	@media (min-height: 1050)
+		top: 30%
+		height: 40%
+	.Textpage &
+		max-width: $max-size - 420
+		margin: 0 auto
+		+bp(large)
+			width: 90%
+			left: 50%
+			+transform(translateX(-50%))
+		.Textbox__body
+			+clearfix
+			@include bp(large)
+				> div
+					float: left
+					width: 50%
+	+fontserif()
+	strong
+		+fontserifbold()
+		font-style: italic
+		text-transform: uppercase
+		font-size: 1.2em
+	&__body
+		position: relative
+		p
+			+bp(huge)
+				font-size: 1.3em
+			+bp(hugest)
+				font-size: 1.5em
+
+		h1
+			+fontserifbold()
+			font-style: italic
+			text-transform: uppercase
+			letter-spacing: 0
+			font-size: 2em
+			margin-bottom: 1em
+	&__wrapper
+		padding: 20px
+		+bp(large)
+			padding: 70px
+			background-color: black
+			.desktop &
+				height: 100%
+				position: absolute
+				overflow: hidden
+	&__scroller
+		display: none
+		+bp(large)
+			.desktop &
+				display: block
+				position: absolute
+				right: 30px
+				top: 70px
+				bottom: 70px
+				width: 4px
+				overflow: hidden
+				&::after
+					content: ''
+					height: 100%
+					width: 2px
+					background-color: $color-selection
+					position: absolute
+					left: 1px
+					z-index: 0
+				span
+					width: 4px
+					background-color: white
+					height: 10px
+					position: absolute
+					display: block
+					margin: 0
+					z-index: 10 !important
