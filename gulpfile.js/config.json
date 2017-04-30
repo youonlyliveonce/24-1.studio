@@ -10,7 +10,7 @@
 
 	"tasks": {
 		"browserSync": {
-			"proxy": "24-1.dev"
+			"proxy": "studio.24-1.dev"
 		},
 
 		"js": {
