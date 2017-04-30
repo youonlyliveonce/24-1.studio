@@ -23,7 +23,7 @@
 			bottom: 0
 			width: 16px
 			height: 100%
-			background-color: black
+			background-color: $color-background
 			z-index: 5
 			ul
 				position: absolute
@@ -35,19 +35,19 @@
 					width: 6px
 					height: 20px
 					margin: 4px
-					background-color: lighten($color-background, 10%)
+					background-color: darken($color-background, 30%)
 					overflow: visible
 					cursor: pointer
 					+transition(all, 0.15s)
 					&:hover
-						background-color: lighten($color-background, 50%)
+						background-color: darken($color-background, 80%)
 						a
 							span
 								opacity: 1
 								visibility: visible
 								+transform(translateX(-100%) translateY(-50%))
 					&.active
-						background-color: white
+						background-color: darken($color-background, 100%)
 						a
 							span
 								animation: scrollnavitem 2s 1 ease

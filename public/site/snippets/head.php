@@ -35,7 +35,7 @@
 		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-		ga('create', 'UA-96532469-2', 'auto');
+		ga('create', 'UA-96532469-4', 'auto');
 		ga('set', 'anonymizeIp', true);
 		ga('send', 'pageview');
 	 </script>
@@ -65,7 +65,7 @@
 				opacity: 0;
 			}
 			.preloader .curtain {
-				background-color: #000;
+				background-color: #fff;
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -140,7 +140,7 @@
 				top: 50%;
 				height: 1px;
 
-				background-color: #fff;
+				background-color: #000;
 				animation: loader-inner 8s infinite ease;
 				-webkit-animation: loader-inner 8s infinite ease;
 				-moz-animation: loader-inner 8s infinite ease;

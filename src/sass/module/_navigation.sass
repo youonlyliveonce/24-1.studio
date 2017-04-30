@@ -86,7 +86,7 @@
 			a
 				cursor: pointer
 				+fontbold
-				color: white
+				color: $color-text
 				display: block
 				position: relative
 				text-transform: uppercase
@@ -131,7 +131,9 @@
 			+bp(large)
 				.desktop &
 					position: absolute
-					top: 5px
+					background-color: #ffffff
+					top: 0px
+					padding-top: 3px
 					right: 0px
 					left: auto
 					bottom: auto
@@ -139,4 +141,4 @@
 					+transform(none)
 			margin: 0
 			font-size: 0.8em
-			opacity: 0.5
+			// opacity: 0.5

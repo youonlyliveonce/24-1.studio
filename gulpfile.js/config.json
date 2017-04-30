@@ -1,7 +1,7 @@
 {
 	"root": {
-		"domain": "http://24-1.de",
-		"appName": "24-1",
+		"domain": "http://studio.24-1.de",
+		"appName": "24-1.studio",
 		"appDescription": "-",
 		"src": "./src",
 		"dest": "./public/assets",

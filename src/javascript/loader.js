@@ -15,11 +15,12 @@ class Loader {
 		window.CM.Loader.mobile = window.mobilecheck();
 		let scope = this;
 		head.ready(document, function() {
-				head.load([	"/assets/css/app.css",
+				head.load([	"https://fonts.googleapis.com/css?family=Open+Sans:400,700,.css",
+										"/assets/css/app.css",
 										"https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js",
 										"/assets/js/app.js",
 										"/assets/js/shim.js",
-										"//fast.fonts.com/cssapi/6536d2ad-a624-4b33-9405-4c303cfb6253.css"
+
 								], CM.Loader.startApplication);
 		});
 	}
