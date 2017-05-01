@@ -31,6 +31,7 @@ of the system, please check out http://getkirby.com/docs/advanced/options
 thumb::$defaults['memory'] = '512MB';
 
 c::set('debug',true);
+c::set('markdown.extra', true);
 c::set('languages', array(
 	array(
 		'code'		=> 'de',

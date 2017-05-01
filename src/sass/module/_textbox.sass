@@ -31,20 +31,37 @@
 	+fontregular()
 	strong
 		+fontbold()
-		font-style: italic
 		text-transform: uppercase
-		font-size: 1.2em
+		font-size: 1.5em
+	em
+		+fontbold()
+		font-style: normal
 	&__body
 		position: relative
-		p
+		table
+			width: 100%
+			tr
+				border-top: 1px solid black
+				&:first-child
+					border-top: 0px solid black
+				&:last-child
+					border-bottom: 1px solid black
+		p + ul
+			margin: 0
+			margin-top: -1em
+			margin-bottom: 1em
+			list-style: disc
+			li
+
+		p, table, ul
+			+fontregular()
 			+bp(huge)
-				font-size: 1.3em
-			+bp(hugest)
-				font-size: 1.5em
+				font-size: 1.1em
+			// +bp(hugest)
+			// 	font-size: 1.5em
 
 		h1
 			+fontbold()
-			font-style: italic
 			text-transform: uppercase
 			letter-spacing: 0
 			font-size: 2em

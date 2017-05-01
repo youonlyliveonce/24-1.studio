@@ -45,12 +45,12 @@
 /***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(322);
+	module.exports = __webpack_require__(321);
 
 
 /***/ }),
 
-/***/ 322:
+/***/ 321:
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -61,7 +61,7 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _head = __webpack_require__(323);
+	var _head = __webpack_require__(322);
 	
 	var _head2 = _interopRequireDefault(_head);
 	
@@ -88,7 +88,7 @@
 			window.CM.Loader.mobile = window.mobilecheck();
 			var scope = this;
 			head.ready(document, function () {
-				head.load(["https://fonts.googleapis.com/css?family=Open+Sans:400,700,.css", "/assets/css/app.css", "https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js", "/assets/js/app.js", "/assets/js/shim.js"], CM.Loader.startApplication);
+				head.load(["https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,.css", "/assets/css/app.css", "https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js", "/assets/js/app.js", "/assets/js/shim.js"], CM.Loader.startApplication);
 			});
 		}
 	
@@ -132,7 +132,7 @@
 
 /***/ }),
 
-/***/ 323:
+/***/ 322:
 /***/ (function(module, exports) {
 
 	"use strict";

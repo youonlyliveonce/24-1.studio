@@ -32,7 +32,6 @@
 		+transform(translateX(0%))
 
 
-
 .Navigation
 	z-index: 9999
 	position: absolute
@@ -91,11 +90,11 @@
 				position: relative
 				text-transform: uppercase
 				font-size: 0.9em
-				line-height: 1.2
+				line-height: 1.3
 				+transition(color, 0.25s)
 				padding: 10px 0.1em
 				position: relative
-				overflow: hidden
+				// overflow: hidden
 				+bp(large)
 					.desktop &
 						padding: 0 0.1em
@@ -106,21 +105,22 @@
 					content: ''
 					position: absolute
 					top: 50%
-					left: 0
-					right: 0
-					width: 100%
+					left: 0px
+					right: 0px
+					// width: 100%
+					margin: 0 -16px
 					height: 0%
 					z-index: 1
 					+transition(all, 0.25s)
-					background-color: white
+					background-color: black
 				&.active
-					color: black
+					color: white
 					&:before
 						top: 0
 						height: 100%
 				+bp(large)
 					&:hover
-						color: black
+						color: white
 						&:before
 							top: 0
 							height: 100%

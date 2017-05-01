@@ -15,7 +15,7 @@ class Loader {
 		window.CM.Loader.mobile = window.mobilecheck();
 		let scope = this;
 		head.ready(document, function() {
-				head.load([	"https://fonts.googleapis.com/css?family=Open+Sans:400,700,.css",
+				head.load([	"https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,.css",
 										"/assets/css/app.css",
 										"https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js",
 										"/assets/js/app.js",

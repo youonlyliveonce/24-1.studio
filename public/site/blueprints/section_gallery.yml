@@ -1,0 +1,30 @@
+title: Section Gallery
+
+pages: false
+
+fields:
+  title: title
+  section: section
+  navigation: navigation
+  scrollable: scrollable
+
+  slideshow:
+    label: Bildergalerie
+    type: structure
+    width: 1/2
+    help: Bilder aus den Dateien auswählen
+    entry: >
+      <u>Bild</u> : {{img}}
+    fields:
+      img:
+        label: Bild
+        type: image
+      size:
+        label: Bildgröße
+        type: select
+        options:
+          tiny: winzig
+          small: klein
+          medium: mittel
+          xmedium: mittel-breit
+          large: gross

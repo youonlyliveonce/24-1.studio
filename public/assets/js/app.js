@@ -72,15 +72,15 @@
 	
 	var _router2 = _interopRequireDefault(_router);
 	
-	var _mainView = __webpack_require__(314);
+	var _mainView = __webpack_require__(313);
 	
 	var _mainView2 = _interopRequireDefault(_mainView);
 	
-	var _lsRiasMin = __webpack_require__(320);
+	var _lsRiasMin = __webpack_require__(319);
 	
 	var _lsRiasMin2 = _interopRequireDefault(_lsRiasMin);
 	
-	var _lazysizesMin = __webpack_require__(321);
+	var _lazysizesMin = __webpack_require__(320);
 	
 	var _lazysizesMin2 = _interopRequireDefault(_lazysizesMin);
 	
@@ -1830,11 +1830,11 @@
 	
 	var _content2 = _interopRequireDefault(_content);
 	
-	var _content3 = __webpack_require__(288);
+	var _content3 = __webpack_require__(287);
 	
 	var _content4 = _interopRequireDefault(_content3);
 	
-	var _formModel = __webpack_require__(310);
+	var _formModel = __webpack_require__(309);
 	
 	var _formModel2 = _interopRequireDefault(_formModel);
 	
@@ -7570,9 +7570,9 @@
 	
 	var _youtube2 = _interopRequireDefault(_youtube);
 	
-	var _filtergrid = __webpack_require__(281);
+	var _gallerygrid = __webpack_require__(281);
 	
-	var _filtergrid2 = _interopRequireDefault(_filtergrid);
+	var _gallerygrid2 = _interopRequireDefault(_gallerygrid);
 	
 	var _linkgrid = __webpack_require__(283);
 	
@@ -7582,11 +7582,7 @@
 	
 	var _slider2 = _interopRequireDefault(_slider);
 	
-	var _case = __webpack_require__(286);
-	
-	var _case2 = _interopRequireDefault(_case);
-	
-	var _textbox = __webpack_require__(287);
+	var _textbox = __webpack_require__(286);
 	
 	var _textbox2 = _interopRequireDefault(_textbox);
 	
@@ -7633,8 +7629,8 @@
 							view = new _youtube2.default({ el: element, id: element.getAttribute('id'), videoid: 'videobox' + index, parentview: self });
 							view.render();
 							break;
-						case "FilterGridView":
-							view = new _filtergrid2.default({ el: element, id: element.getAttribute('id'), parentview: self });
+						case "GalleryGridView":
+							view = new _gallerygrid2.default({ el: element, id: element.getAttribute('id'), parentview: self });
 							view.render();
 							break;
 						case "LinkGridView":
@@ -7643,10 +7639,6 @@
 							break;
 						case "SliderView":
 							view = new _slider2.default({ el: element, id: element.getAttribute('id'), parentview: self });
-							view.render();
-							break;
-						case "CaseView":
-							view = new _case2.default({ el: element, id: element.getAttribute('id'), parentview: self });
 							view.render();
 							break;
 						case "TextpageView":
@@ -7725,11 +7717,11 @@
 			}
 		},
 		onFirstSubViewActiveChange: function onFirstSubViewActiveChange(view, value) {
-			if (value) {
-				_ampersandDom2.default.addClass(document.body, 'Navigation--home');
-			} else {
-				_ampersandDom2.default.removeClass(document.body, 'Navigation--home');
-			}
+			// if(value) {
+			// 	dom.addClass(document.body, 'Navigation--home');
+			// } else {
+			// 	dom.removeClass(document.body, 'Navigation--home');
+			// }
 		},
 		handleKeyDown: function handleKeyDown(event) {
 			if (event.key == undefined) {
@@ -19881,15 +19873,9 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var Filtergrid = _longbase2.default.extend({
+	var Gallerygrid = _longbase2.default.extend({
 		props: {
 			id: ['string', true, ''],
-			filter: ['object', true, function () {
-				return {};
-			}],
-			filteritems: ['array', true, function () {
-				return [];
-			}],
 			isscrollable: ['boolean', true, true],
 			parentview: ['object', true, function () {
 				return {};
@@ -19904,96 +19890,30 @@
 				return {};
 			}]
 		},
-		events: {
-			'click .Portfolio__filter ul li': 'handleClickFilter'
-		},
+		events: {},
 		render: function render() {
 			this.cacheElements({
-				gridBackground: '.Portfolio__background',
-				gridBody: '.Portfolio__body',
-				gridHead: '.Portfolio__filter'
+				gridBackground: '.Gallery__background',
+				gridHead: '.Gallery__head',
+				gridBody: '.Gallery__body'
 			});
-			this.filteritems = this.queryAll('.Portfolio__filter li');
 			this.on('change:active', this.onActiveChange, this);
-			TweenMax.to('.check-grey', 0.25, { drawSVG: "0% 0%" });
 			TweenMax.delayedCall(0.25, function () {
-				this.iso = new Isotope('.Portfolio__mansry', {
-					itemSelector: '.Portfolio__item',
+				this.iso = new Isotope('.Gallery__mansry', {
+					itemSelector: '.Gallery__item',
 					percentPosition: true,
 					stagger: 30,
 					masonry: {
-						columnWidth: '.Portfolio__sizer'
+						columnWidth: '.Gallery__sizer'
 					}
 				});
 			}, [], this);
 			this.once('remove', this.cleanup, this);
-	
 			return this;
-		},
-		handleClickFilter: function handleClickFilter(event) {
-			var target = event.delegateTarget,
-			    whiteSVGs = event.delegateTarget.getElementsByClassName('check-white'),
-			    greySVGs = event.delegateTarget.getElementsByClassName('check-grey'),
-			    _filter = event.delegateTarget.dataset.filter,
-			    self = this;
-			if (_filter == "all") {
-				for (var i = 0; i < this.filteritems.length; i++) {
-					this.filteritems[i].classList.remove('active');
-					this.filteritems[i].classList.add('active');
-					if (this.filteritems[i].dataset.filter != "all") {
-						// this.gridBody.classList.add(this.filteritems[i].dataset.filter);
-						this.showWhiteArrow(this.filteritems[i].getElementsByClassName('check-white'), this.filteritems[i].getElementsByClassName('check-grey'));
-					}
-				}
-				this.iso.arrange({
-					filter: function filter(itemElem) {
-						return true;
-					}
-				});
-			} else {
-				/* ISOLATE */
-				for (var _i = 0; _i < this.filteritems.length; _i++) {
-					this.filteritems[_i].classList.remove('active');
-					// this.filteritems[i].classList.add('active');
-					if (this.filteritems[_i].dataset.filter != "all") {
-						// this.gridBody.classList.remove(this.filteritems[i].dataset.filter);
-						this.showGreyArrow(this.filteritems[_i].getElementsByClassName('check-white'), this.filteritems[_i].getElementsByClassName('check-grey'));
-					}
-				}
-				this.iso.arrange({
-					filter: function filter(itemElem) {
-						return itemElem.classList.contains(_filter);
-					}
-				});
-				TweenMax.delayedCall(0.35, function () {
-					if (-1 * this.gridBody._gsTransform.y > this.gridBody.clientHeight) {
-						TweenMax.to(this.gridBody, 1.25, { y: 0 });
-					}
-				}, [], this);
-				target.classList.add('active');
-				this.showWhiteArrow(whiteSVGs, greySVGs);
-	
-				/* REDUCE */
-				// this.gridBody.classList.toggle(filter);
-				// target.classList.toggle('active');
-				// if(target.classList.contains('active')){
-				// 	this.showWhiteArrow(whiteSVGs, greySVGs);
-				// } else {
-				// 	this.showGreyArrow(whiteSVGs, greySVGs);
-				// }
-			}
-		},
-		showGreyArrow: function showGreyArrow(white, grey) {
-			TweenMax.to(white[0], 0.25, { drawSVG: "100% 100%" });
-			TweenMax.to(grey[0], 0.25, { drawSVG: "100% 0%", delay: 0.25 });
-		},
-		showWhiteArrow: function showWhiteArrow(white, grey) {
-			TweenMax.to(white[0], 0.25, { drawSVG: "0% 100%", delay: 0.25 });
-			TweenMax.to(grey[0], 0.25, { drawSVG: "0% 0%" });
 		}
 	});
 	
-	exports.default = Filtergrid;
+	exports.default = Gallerygrid;
 
 /***/ }),
 /* 282 */
@@ -20484,274 +20404,6 @@
 		value: true
 	});
 	
-	var _base = __webpack_require__(280);
-	
-	var _base2 = _interopRequireDefault(_base);
-	
-	var _ampersandDom = __webpack_require__(276);
-	
-	var _ampersandDom2 = _interopRequireDefault(_ampersandDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var Case = _base2.default.extend({
-		props: {
-			id: ['string', true, ''],
-			isscrollable: ['boolean', true, true],
-			parentview: ['object', true, function () {
-				return {};
-			}],
-			player: ['object', true, function () {
-				return {};
-			}],
-			swiper: ['object', true, function () {
-				return undefined;
-			}],
-			settings: ['object', true, function () {
-				return {
-					speed: 600,
-					// effect: 'fade',
-					pagination: '.Case .swiper-pagination',
-					paginationClickable: true,
-					nextButton: '.Case .swiper-button-next',
-					prevButton: '.Case .swiper-button-prev',
-					loop: true
-				};
-			}],
-			topend: ['boolean', true, true],
-			bottomend: ['boolean', true, false],
-			watchvideo: ['number', true, 0],
-			caseBoardVideo: ['object', true, function () {
-				return undefined;
-			}],
-			mute: ['boolean', true, false]
-		},
-	
-		events: {
-			'click .Playbar': '_handlePlayerClick',
-			'click .Controlbar__state--clickzone': '_handleStateClick',
-			'click .Controlbar__play': '_handlePlayerClick',
-			'click .Controlbar__audio': '_handleAudioClick'
-	
-		},
-	
-		render: function render() {
-			var self = this;
-			this.cacheElements({
-				caseBody: '.Case__body',
-				caseVideo: '.Videobox__background',
-				totalTime: '[data-hook=total-time]',
-				currentTime: '[data-hook=current-time]',
-				statePlayed: '.Controlbar__state--played',
-				stateLoaded: '.Controlbar__state--loaded'
-			});
-			if (this.queryAll('#' + this.id + ' .swiper-slide').length > 1) {
-				TweenMax.delayedCall(0.15, function () {
-					this.swiper = new Swiper('#' + this.id + ' .swiper-container', this.settings);
-				}, [], this);
-			}
-			if (this.caseVideo != undefined) {
-				if (window.YT === undefined) {
-					window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
-					// INSERT YOUTUBE API
-					var tag = document.createElement('script');
-					tag.src = "https://www.youtube.com/iframe_api";
-					tag.id = "youtubeapi";
-					var firstScriptTag = document.getElementsByTagName('script')[0];
-					firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-				} else {
-					TweenMax.delayedCall(0.25, function () {
-						self.onYouTubeIframeAPIReady();
-					});
-				}
-				TweenMax.set(this.stateLoaded, { transformOrigin: "0% 0%" });
-				TweenMax.set(this.statePlayed, { transformOrigin: "0% 0%" });
-				this.caseBoardVideo = this.queryAll('.Case__item--youtube > div');
-				this.on('change:mute', this.onMuteChange, this);
-			}
-			this.once('remove', this.cleanup, this);
-	
-			return this;
-		},
-	
-		onYouTubeIframeAPIReady: function onYouTubeIframeAPIReady() {
-			this.player = new YT.Player('casevideo', {
-				events: {
-					'onReady': this.onPlayerReady.bind(this),
-					'onStateChange': this.onPlayerStateChange.bind(this)
-				}
-			});
-			if (this.player.B) {
-				this.onPlayerReady();
-			};
-		},
-		onPlayerReady: function onPlayerReady() {
-			this.ready = true;
-			this.totalTime.innerHTML = this.player.getDuration().toHHMMSS();
-			this.currentTime.innerHTML = Number(0).toHHMMSS();
-			if (this.active && !CM.App._mobile) {
-				this.playVideo();
-			}
-		},
-		playVideo: function playVideo() {
-			if (typeof this.player.playVideo == 'function') {
-				_ampersandDom2.default.addClass(this.caseVideo, 'playing');
-				this.player.playVideo();
-				this.watchvideo = setInterval(this._watchVideo.bind(this), 100);
-			}
-		},
-		pauseVideo: function pauseVideo() {
-			if (typeof this.player.pauseVideo == 'function') {
-				_ampersandDom2.default.removeClass(this.caseVideo, 'playing');
-				this.player.pauseVideo();
-				clearInterval(this.watchvideo);
-			}
-		},
-		muteVideo: function muteVideo() {
-			if (typeof this.player.mute == 'function') {
-				this.player.mute();
-			}
-		},
-		unmuteVideo: function unmuteVideo() {
-			if (typeof this.player.unMute == 'function') {
-				this.player.unMute();
-			}
-		},
-		onMuteChange: function onMuteChange(model, value) {
-			if (value) {
-				this.muteVideo();
-				_ampersandDom2.default.addClass(this.caseVideo, 'muted');
-			} else {
-				if (this.ready) {
-					this.unmuteVideo();
-					_ampersandDom2.default.removeClass(this.caseVideo, 'muted');
-				}
-			}
-		},
-		onPlayerStateChange: function onPlayerStateChange(event) {
-			switch (this.player.getPlayerState()) {
-				case 0:
-					_ampersandDom2.default.removeClass(this.caseVideo, 'playing');
-					break;
-				case 1:
-	
-					break;
-				case 2:
-					_ampersandDom2.default.removeClass(this.caseVideo, 'playing');
-					break;
-				case 3:
-	
-					break;
-				default:
-	
-			}
-		},
-		_watchVideo: function _watchVideo() {
-			var total = this.player.getDuration(),
-			    current = this.player.getCurrentTime(),
-			    loaded = this.player.getVideoLoadedFraction();
-			// this.totalTime.innerHTML = this.player.getDuration().toHHMMSS();
-			this.currentTime.innerHTML = current.toHHMMSS();
-			TweenMax.set(this.stateLoaded, { css: { scaleX: loaded } });
-			TweenMax.set(this.statePlayed, { css: { scaleX: current / total } });
-		},
-		_handleStateClick: function _handleStateClick(e) {
-			var prozent = e.layerX / this.caseVideo.offsetWidth;
-			console.log("prozent:", prozent);
-			console.log("e:", e);
-			console.log("e.offsetX:", e.offsetX);
-			console.log("e.layerX:", e.clientX);
-			console.log("this.caseVideo.offsetWidth:", this.caseVideo.offsetWidth);
-			console.log("this.player.getDuration():", this.player.getDuration());
-	
-			this.player.seekTo(this.player.getDuration() * prozent, true);
-			this.playVideo();
-			e.stopPropagation();
-			e.preventDefault();
-		},
-		_handlePlayerClick: function _handlePlayerClick(e) {
-			switch (this.player.getPlayerState()) {
-				case 0:
-					this.playVideo();
-					break;
-				case 1:
-					this.pauseVideo();
-					break;
-				case 2:
-					this.playVideo();
-					break;
-				case 3:
-					this.pauseVideo();
-					break;
-				default:
-					this.pauseVideo();
-			}
-		},
-		_handleAudioClick: function _handleAudioClick() {
-			this.mute = !this.mute;
-		},
-		cleanup: function cleanup() {
-			clearInterval(this.watchvideo);
-		},
-		handleResize: function handleResize() {
-			if (!CM.App._mobile) {
-				this.el.setAttribute("style", "height:" + document.body.clientHeight + "px");
-				if (this.caseVideo != undefined) {
-					var newWidth = this.caseVideo.clientWidth,
-					    newHeight = newWidth / 16 * 9;
-					this.caseVideo.setAttribute("style", "height:" + newHeight + "px;");
-				}
-				if (this.caseBoardVideo != undefined) {
-					for (var i = 0; i < this.caseBoardVideo.length; i++) {
-						var _newWidth = this.caseBoardVideo[i].clientWidth,
-						    _newHeight = _newWidth / 16 * 9;
-						this.caseBoardVideo[i].setAttribute("style", "height:" + _newHeight + "px;");
-					}
-				}
-			}
-		},
-		handleMouseWheel: function handleMouseWheel(event) {
-			var self = this;
-			var e = window.event || event || event.originalEvent;
-			var delta = e.deltaY || -1 * e.wheelDelta;
-	
-			// FF Y-Achse
-			if (e.axis == 2) {
-				delta = e.detail * e.detail * (e.detail / 2);
-			}
-			if (delta < 0) {
-				self.bottomend = false;
-				if (self.caseBody._gsTransform && self.caseBody._gsTransform.y - delta > 0) {
-					TweenMax.to(self.caseBody, 0.1, { y: 0, overwrite: true });
-				} else {
-					TweenMax.set(this.caseBody, { y: '-=' + delta });
-				}
-			} else if (delta > 0) {
-				self.topend = false;
-				var cH = document.body.clientHeight,
-				    bH = self.caseBody.clientHeight,
-				    dH = cH - bH;
-				if (self.caseBody._gsTransform && self.caseBody._gsTransform.y - delta < cH - bH) {
-					TweenMax.to(self.caseBody, 0.1, { y: dH, overwrite: true });
-				} else {
-					TweenMax.set(self.caseBody, { y: '-=' + delta });
-				}
-			}
-		}
-	});
-	
-	exports.default = Case;
-
-/***/ }),
-/* 287 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
 	var _boxbase = __webpack_require__(285);
 	
 	var _boxbase2 = _interopRequireDefault(_boxbase);
@@ -20828,7 +20480,7 @@
 	exports.default = Textbox;
 
 /***/ }),
-/* 288 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20837,7 +20489,7 @@
 	    value: true
 	});
 	
-	var _base = __webpack_require__(289);
+	var _base = __webpack_require__(288);
 	
 	var _base2 = _interopRequireDefault(_base);
 	
@@ -20849,7 +20501,7 @@
 	exports.default = Content;
 
 /***/ }),
-/* 289 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20858,7 +20510,7 @@
 			value: true
 	});
 	
-	var _ampersandModel = __webpack_require__(290);
+	var _ampersandModel = __webpack_require__(289);
 	
 	var _ampersandModel2 = _interopRequireDefault(_ampersandModel);
 	
@@ -20911,15 +20563,15 @@
 	exports.default = Base;
 
 /***/ }),
-/* 290 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*$AMPERSAND_VERSION*/
 	var State = __webpack_require__(159);
-	var sync = __webpack_require__(291);
+	var sync = __webpack_require__(290);
 	var assign = __webpack_require__(7);
 	var isObject = __webpack_require__(20);
-	var clone = __webpack_require__(309);
+	var clone = __webpack_require__(308);
 	var result = __webpack_require__(87);
 	
 	// Throw an error when a URL is needed, and none is supplied.
@@ -21059,22 +20711,22 @@
 
 
 /***/ }),
-/* 291 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var xhr = __webpack_require__(292);
-	module.exports = __webpack_require__(299)(xhr);
+	var xhr = __webpack_require__(291);
+	module.exports = __webpack_require__(298)(xhr);
 
 
 /***/ }),
-/* 292 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var window = __webpack_require__(293)
-	var isFunction = __webpack_require__(294)
-	var parseHeaders = __webpack_require__(295)
-	var xtend = __webpack_require__(298)
+	var window = __webpack_require__(292)
+	var isFunction = __webpack_require__(293)
+	var parseHeaders = __webpack_require__(294)
+	var xtend = __webpack_require__(297)
 	
 	module.exports = createXHR
 	createXHR.XMLHttpRequest = window.XMLHttpRequest || noop
@@ -21314,7 +20966,7 @@
 
 
 /***/ }),
-/* 293 */
+/* 292 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -21334,7 +20986,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 294 */
+/* 293 */
 /***/ (function(module, exports) {
 
 	module.exports = isFunction
@@ -21355,11 +21007,11 @@
 
 
 /***/ }),
-/* 295 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var trim = __webpack_require__(296)
-	  , forEach = __webpack_require__(297)
+	var trim = __webpack_require__(295)
+	  , forEach = __webpack_require__(296)
 	  , isArray = function(arg) {
 	      return Object.prototype.toString.call(arg) === '[object Array]';
 	    }
@@ -21391,7 +21043,7 @@
 	}
 
 /***/ }),
-/* 296 */
+/* 295 */
 /***/ (function(module, exports) {
 
 	
@@ -21411,10 +21063,10 @@
 
 
 /***/ }),
-/* 297 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(294)
+	var isFunction = __webpack_require__(293)
 	
 	module.exports = forEach
 	
@@ -21463,7 +21115,7 @@
 
 
 /***/ }),
-/* 298 */
+/* 297 */
 /***/ (function(module, exports) {
 
 	module.exports = extend
@@ -21488,16 +21140,16 @@
 
 
 /***/ }),
-/* 299 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*$AMPERSAND_VERSION*/
 	var result = __webpack_require__(87);
-	var defaults = __webpack_require__(300);
+	var defaults = __webpack_require__(299);
 	var includes = __webpack_require__(216);
 	var assign = __webpack_require__(7);
-	var qs = __webpack_require__(303);
-	var mediaType = __webpack_require__(308);
+	var qs = __webpack_require__(302);
+	var mediaType = __webpack_require__(307);
 	
 	
 	module.exports = function (xhr) {
@@ -21644,13 +21296,13 @@
 
 
 /***/ }),
-/* 300 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(31),
-	    assignInWith = __webpack_require__(301),
+	    assignInWith = __webpack_require__(300),
 	    baseRest = __webpack_require__(28),
-	    customDefaultsAssignIn = __webpack_require__(302);
+	    customDefaultsAssignIn = __webpack_require__(301);
 	
 	/**
 	 * Assigns own and inherited enumerable string keyed properties of source
@@ -21682,7 +21334,7 @@
 
 
 /***/ }),
-/* 301 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var copyObject = __webpack_require__(26),
@@ -21726,7 +21378,7 @@
 
 
 /***/ }),
-/* 302 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var eq = __webpack_require__(25);
@@ -21761,14 +21413,14 @@
 
 
 /***/ }),
-/* 303 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var stringify = __webpack_require__(304);
-	var parse = __webpack_require__(307);
-	var formats = __webpack_require__(306);
+	var stringify = __webpack_require__(303);
+	var parse = __webpack_require__(306);
+	var formats = __webpack_require__(305);
 	
 	module.exports = {
 	    formats: formats,
@@ -21778,13 +21430,13 @@
 
 
 /***/ }),
-/* 304 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(305);
-	var formats = __webpack_require__(306);
+	var utils = __webpack_require__(304);
+	var formats = __webpack_require__(305);
 	
 	var arrayPrefixGenerators = {
 	    brackets: function brackets(prefix) { // eslint-disable-line func-name-matching
@@ -21991,7 +21643,7 @@
 
 
 /***/ }),
-/* 305 */
+/* 304 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -22179,7 +21831,7 @@
 
 
 /***/ }),
-/* 306 */
+/* 305 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -22203,12 +21855,12 @@
 
 
 /***/ }),
-/* 307 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(305);
+	var utils = __webpack_require__(304);
 	
 	var has = Object.prototype.hasOwnProperty;
 	
@@ -22376,7 +22028,7 @@
 
 
 /***/ }),
-/* 308 */
+/* 307 */
 /***/ (function(module, exports) {
 
 	/**
@@ -22489,7 +22141,7 @@
 
 
 /***/ }),
-/* 309 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseClone = __webpack_require__(161);
@@ -22531,7 +22183,7 @@
 
 
 /***/ }),
-/* 310 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -22540,15 +22192,15 @@
 	
 	var _ampersandState2 = _interopRequireDefault(_ampersandState);
 	
-	var _ampersandSync = __webpack_require__(291);
+	var _ampersandSync = __webpack_require__(290);
 	
 	var _ampersandSync2 = _interopRequireDefault(_ampersandSync);
 	
-	var _qs = __webpack_require__(303);
+	var _qs = __webpack_require__(302);
 	
 	var _qs2 = _interopRequireDefault(_qs);
 	
-	var _es6Promise = __webpack_require__(311);
+	var _es6Promise = __webpack_require__(310);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22625,7 +22277,7 @@
 	module.exports = Form;
 
 /***/ }),
-/* 311 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, global) {/*!
@@ -22764,7 +22416,7 @@
 	function attemptVertx() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(313);
+	    var vertx = __webpack_require__(312);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -23787,10 +23439,10 @@
 	})));
 	//# sourceMappingURL=es6-promise.map
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(312), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(311), (function() { return this; }())))
 
 /***/ }),
-/* 312 */
+/* 311 */
 /***/ (function(module, exports) {
 
 	// shim for using process in browser
@@ -23980,13 +23632,13 @@
 
 
 /***/ }),
-/* 313 */
+/* 312 */
 /***/ (function(module, exports) {
 
 	/* (ignored) */
 
 /***/ }),
-/* 314 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24007,15 +23659,15 @@
 	
 	var _ampersandDom2 = _interopRequireDefault(_ampersandDom);
 	
-	var _ampersandViewSwitcher = __webpack_require__(315);
+	var _ampersandViewSwitcher = __webpack_require__(314);
 	
 	var _ampersandViewSwitcher2 = _interopRequireDefault(_ampersandViewSwitcher);
+	
+	__webpack_require__(315);
 	
 	__webpack_require__(316);
 	
 	__webpack_require__(317);
-	
-	__webpack_require__(318);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -24326,7 +23978,7 @@
 	exports.default = MainView;
 
 /***/ }),
-/* 315 */
+/* 314 */
 /***/ (function(module, exports) {
 
 	/*$AMPERSAND_VERSION*/
@@ -24452,7 +24104,7 @@
 
 
 /***/ }),
-/* 316 */
+/* 315 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -24582,7 +24234,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 317 */
+/* 316 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -24779,7 +24431,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 318 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -30869,7 +30521,7 @@
 					if (global) {
 						_globals[n] = cl; //provides a way to avoid global namespace pollution. By default, the main classes like TweenLite, Power1, Strong, etc. are added to window unless a GreenSockGlobals is defined. So if you want to have things added to a custom object instead, just do something like window.GreenSockGlobals = {} before loading any GreenSock files. You can even set up an alias like window.GreenSockGlobals = windows.gs = {} so that you can access everything like gs.TweenLite. Also remember that ALL classes are added to the window.com.greensock object (in their respective packages, like com.greensock.easing.Power1, com.greensock.TweenLite, etc.)
 						hasModule = typeof module !== "undefined" && module.exports;
-						if (!hasModule && "function" === "function" && __webpack_require__(319)) {
+						if (!hasModule && "function" === "function" && __webpack_require__(318)) {
 							//AMD
 							!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
 								return cl;
@@ -32737,7 +32389,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 319 */
+/* 318 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -32745,7 +32397,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ }),
-/* 320 */
+/* 319 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -32861,7 +32513,7 @@
 	}(window, document);
 
 /***/ }),
-/* 321 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";

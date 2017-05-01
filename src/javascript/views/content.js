@@ -1,10 +1,9 @@
 import PageView from './base';
 import View from 'ampersand-view';
 import YoutubeView from '../features/youtube/youtube';
-import FilterGridView from '../features/filtergrid/filtergrid';
+import GalleryGridView from '../features/gallerygrid/gallerygrid';
 import LinkGridView from '../features/linkgrid/linkgrid';
 import SliderView from '../features/slider/slider';
-import CaseView from '../features/case/case';
 import TextpageView from '../features/textbox/textbox';
 import dom from 'ampersand-dom';
 import _ from 'underscore';
@@ -41,8 +40,8 @@ let Content = PageView.extend({
 						view = new YoutubeView({el:element, id:element.getAttribute('id'), videoid:'videobox'+index, parentview:self});
 						view.render();
 						break;
-					case "FilterGridView" :
-						view = new FilterGridView({el:element, id:element.getAttribute('id'), parentview:self});
+					case "GalleryGridView" :
+						view = new GalleryGridView({el:element, id:element.getAttribute('id'), parentview:self});
 						view.render();
 						break;
 					case "LinkGridView" :
@@ -51,10 +50,6 @@ let Content = PageView.extend({
 						break;
 					case "SliderView" :
 						view = new SliderView({el:element, id:element.getAttribute('id'), parentview:self});
-						view.render();
-						break;
-					case "CaseView" :
-						view = new CaseView({el:element, id:element.getAttribute('id'), parentview:self});
 						view.render();
 						break;
 					case "TextpageView" :
@@ -135,11 +130,11 @@ let Content = PageView.extend({
 		}
 	},
 	onFirstSubViewActiveChange: function(view, value){
-		if(value) {
-			dom.addClass(document.body, 'Navigation--home');
-		} else {
-			dom.removeClass(document.body, 'Navigation--home');
-		}
+		// if(value) {
+		// 	dom.addClass(document.body, 'Navigation--home');
+		// } else {
+		// 	dom.removeClass(document.body, 'Navigation--home');
+		// }
 	},
 	handleKeyDown: function(event){
 		if(event.key == undefined){

@@ -2,11 +2,12 @@ title: Page
 
 pages:
   template:
-    - section_videobox
-    - section_portfolio
-    - section_slider
-    - section_clients
     - section_textbox
+    - section_gallery
+    # - section_portfolio
+    - section_clients
+    - section_slider
+    - section_videobox
     - redirect
 
 fields:
