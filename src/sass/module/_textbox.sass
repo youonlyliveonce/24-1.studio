@@ -1,20 +1,21 @@
 .Textbox
 	color: $color-text
+	background-color: white
 	z-index: 103
 	position: absolute
 	top: 100%
 	overflow: auto
 	-webkit-overflow-scrolling: touch
 	+bp(large)
-		top: 20%
+		top: 15%
 		left: 55%
 		width: 37%
-		height: 60%
+		height: 70%
 		.desktop &
 			overflow: hidden
 	@media (min-height: 1050)
-		top: 30%
-		height: 40%
+		top: 25%
+		height: 50%
 	.Textpage &
 		max-width: $max-size - 420
 		margin: 0 auto
