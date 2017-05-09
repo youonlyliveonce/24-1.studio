@@ -8,5 +8,12 @@
 			<span></span>
 		</span>
 	</header>
+	<?php if($site->facts()->isNotEmpty()) : ?>
+		<div class="Button Button--PDF">
+			<a href="<?php echo $site->file($site->facts())->url() ?>" target="_blank">
+				<span><?php echo $site->factslabel(); ?></span>
+			</a>
+		</div>
+	<?php endif; ?>
 	<main class="Page__inner" role="main">
 		<div class="View">

@@ -1,4 +1,28 @@
 .Button
+	&--PDF
+		display: block
+		bottom: 10px
+		left: 10px
+		right: 10px
+		+bp(large)
+			display: inline-block
+			bottom: 20px
+			left: 20px
+			right: auto
+		position: fixed
+		z-index: 1000
+		a
+			display: block
+			text-align: center
+			+bp(large)
+				display: inline-block
+				text-align: left
+			background-color: black
+			padding: 10px 15px
+		span
+			font-weight: 600
+			color: white
+			text-transform: uppercase
 	&--down
 		display: none
 		+bp(large)

@@ -4,10 +4,20 @@ pages:
   - default
   - redirect
 
+
+
 fields:
   title:
     label: Title
     type:  text
+  facts:
+    label: Globales PDF
+    type: select
+    options: files
+  factslabel:
+    label: Globales PDF Bezeichnung
+    type: text
+    default: Alle Fakten als PDF
   author:
     label: Author
     type:  text
