@@ -49,7 +49,6 @@
 
 	&__layer
 		>div
-
 			&.active
 				svg
 					opacity: 0.25
@@ -65,7 +64,7 @@
 						+transform(translateX(0%))
 					&__scroller
 						width: 4px
-						+transition(width, 0.75s, cubic-bezier(0.000, 0.000, 0.000, 1.005), 2s)
+						+transition(width, 0.75s, cubic-bezier(0.000, 0.000, 0.000, 1.005), 0.5s)
 			svg
 				// display: none
 				opacity: 0
@@ -87,7 +86,7 @@
 				+transform(translateY(-50%))
 				>span
 					>span
-						+transition(all, 1.25s, ease-out)
+						+transition(all, 0.5s, ease-out)
 			h2
 				font-size: 1em
 				line-height: 0.8
@@ -135,7 +134,7 @@
 						+transform(translateX(-101%))
 			.Textbox
 				&__wrapper
-					+transition(all, 1s, cubic-bezier(0.000, 0.000, 0.000, 1.005), 0.75s)
+					+transition(all, 0.75s, cubic-bezier(0.000, 0.000, 0.000, 1.005), 0.15s)
 					+transform(translateX(-101%))
 				&__scroller
 					width: 0px
@@ -169,7 +168,7 @@
 						// padding-left: 0px
 						// +transition(padding, 1.00s,  ease-out, 0.75s)
 						&__wrapper
-							+transition(all, 1.75s,  ease-out, 0.75s)
+							+transition(all, 0.75s,  ease-out, 0.15s)
 							+transform(translateX(0px))
 							opacity: 1
 					h1
@@ -177,7 +176,7 @@
 							@for $i from 1 through 30
 								&:nth-child(#{$i})
 									>span
-										+transition(all, 1.25s, ease-out, $i*0.1s)
+										+transition(all, 0.75s, ease-out, $i*0.05s)
 					h2
 						>span
 							@for $i from 1 through 30

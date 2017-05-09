@@ -64,7 +64,7 @@ let Slider = Base.extend({
 
 	onActiveChange: function(view, value){
 		if(value){
-			TweenMax.delayedCall(1.25, function(){
+			TweenMax.delayedCall(0.45, function(){
 				if(this.active){
 					this.bindChangeStart();
 					if(!CM.App._mobile){
