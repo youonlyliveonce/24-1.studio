@@ -1,4 +1,4 @@
-<?php snippet('blog/header') ?>
+<?php snippet('magazine/header') ?>
 
 <main class="site-main">
 
@@ -9,7 +9,7 @@
 			<h1 class="main-header"><?= $page->title()->html() ?></h1>
 			<?= $page->text()->kirbytext() ?>
 
-			<?php snippet('blog/masonry') ?>
+			<?php snippet('magazine/masonry') ?>
 
 		<?php else : ?>
 
@@ -17,10 +17,10 @@
 
 		<?php endif ?>
 
-		<?php snippet('blog/pagination') ?>
+		<?php snippet('magazine/pagination') ?>
 
 	</div><!-- .container -->
 
 </main>
 
-<?php snippet('blog/footer') ?>
+<?php snippet('magazine/footer') ?>

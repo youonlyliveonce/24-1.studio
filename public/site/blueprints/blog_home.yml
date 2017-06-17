@@ -24,6 +24,6 @@ fields:
         options: query
         query:
             fetch: pages
-            template: blog-article
+            template: blog_article
             value: '{{uri}}'
         help: Choose the featured article in the home page

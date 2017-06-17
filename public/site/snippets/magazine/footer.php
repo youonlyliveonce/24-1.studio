@@ -45,12 +45,12 @@
   crossorigin="anonymous">
 </script>
 <!-- Jquery fallback -->
-<script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="assets/blog/js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
 <?= js(array(
-	'assets/js/vendor/bootstrap.min.js',
-	'assets/js/vendor/masonry.pkgd.min.js',
-	'assets/js/vendor/imagesloaded.pkgd.min.js',
-	'assets/js/magazine.js'
+	'assets/blog/js/vendor/bootstrap.min.js',
+	'assets/blog/js/vendor/masonry.pkgd.min.js',
+	'assets/blog/js/vendor/imagesloaded.pkgd.min.js',
+	'assets/blog/js/magazine.js'
 )) ?>
 
 </body>

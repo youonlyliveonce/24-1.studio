@@ -1,4 +1,4 @@
-<?php snippet('blog/header', array('site' => $site, 'pages' => $pages)) ?>
+<?php snippet('maagzine/header', array('site' => $site, 'pages' => $pages)) ?>
 
 <main class="site-main">
 
@@ -28,7 +28,7 @@
 
 		<?php if($articles->count()): ?>
 
-			<?php snippet('blog/masonry', array('articles' => $articles)) ?>
+			<?php snippet('maagzine/masonry', array('articles' => $articles)) ?>
 
 		<?php else : ?>
 
@@ -36,10 +36,10 @@
 
 		<?php endif ?>
 
-		<?php snippet('blog/pagination', array('articles' => $articles)) ?>
+		<?php snippet('maagzine/pagination', array('articles' => $articles)) ?>
 
 	</div><!-- .container -->
 
 </main>
 
-<?php snippet('blog/footer', array('site' => $site, 'pages' => $pages)) ?>
+<?php snippet('maagzine/footer', array('site' => $site, 'pages' => $pages)) ?>

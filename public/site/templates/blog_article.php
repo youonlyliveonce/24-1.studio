@@ -1,4 +1,4 @@
-<?php snippet('blog/header') ?>
+<?php snippet('magazine/header') ?>
 
 	<main class="site-main">
 
@@ -94,4 +94,4 @@
 
 	</main>
 
-<?php snippet('blog/footer') ?>
+<?php snippet('magazine/footer') ?>
