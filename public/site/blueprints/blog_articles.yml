@@ -1,0 +1,28 @@
+title: Blog Articles
+pages:
+    template: blog-article
+    num: date
+    sort: flip
+options:
+    template: false
+icon: newspaper-o
+files: false
+fields:
+    articles-meta:
+        label: Articles meta
+        type: headline
+    title:
+        label: Title
+        type:  text
+        icon: header
+    description:
+        label: Description
+        type: text
+        icon: info
+        help: Meta description tag (recommended max 160 characters)
+    articles-content:
+        label: Articles content
+        type: headline
+    text:
+        label: Text
+        type:  textarea

@@ -1,0 +1,23 @@
+title: Blog Subpage
+pages:
+    template: blog-subpage
+files: true
+fields:
+    page-meta:
+        label: Page meta
+        type: headline
+    title:
+        label: Title
+        type: text
+        icon: header
+    description:
+        label: Description
+        type: text
+        icon: info
+        help: Meta description tag (recommended max 160 characters)
+    page-content:
+        label: Page content
+        type: headline
+    text:
+        label: Text
+        type: textarea

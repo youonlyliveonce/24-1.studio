@@ -10,5 +10,5 @@ fields:
     type: title
   redirect:
     label: Weiterleitungsziel
-    type: url
+    type: text
   navigation: navigation

@@ -1,0 +1,51 @@
+title: Blog Contact
+pages:
+    template: blog-subpage
+options:
+    template: false
+files: true
+icon: envelope
+fields:
+    page-meta:
+        label: Page meta
+        type: headline
+    title:
+        label: Title
+        type:  text
+        icon: header
+    description:
+        label: Description
+        type: text
+        icon: info
+        help: Meta description tag (recommended max 160 characters)
+    page-content:
+        label: Page content
+        type: headline
+    text:
+        label: Intro
+        type:  textarea
+    contactinfo:
+        label: Contact info
+        type: textarea
+    page-options:
+        label: Page options
+        type: headline
+    from:
+        label: From
+        type: email
+        width: 1/2
+    to:
+        label: To
+        type: email
+        width: 1/2
+    subject:
+        label: Subject
+        type: text
+        width: 1/2
+        icon: at
+    footernav:
+        label: Footer Nav
+        type: checkbox
+        text: Show this page in the footer navigation
+        width: 1/2
+        icon: check

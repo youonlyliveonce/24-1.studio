@@ -1,0 +1,45 @@
+title: Blog Article
+pages: false
+files: true
+icon: file-text-o
+fields:
+    article-meta:
+        label: Article meta
+        type: headline
+    title:
+        label: Title
+        type:  text
+        icon: header
+        width: 3/5
+    date:
+        label: Date
+        type: date
+        default: today
+        format: LL
+        required: true
+        width: 2/5
+    description:
+        label: Description
+        type: text
+        icon: info
+        help: Meta description tag (recommended max 160 characters)
+    tags:
+        label: Tags
+        type: tags
+        width: 3/5
+    author:
+        label: Author
+        type: user
+        width: 2/5
+    article-content:
+        label: Article content
+        type: headline
+    cover:
+        label: Featured image
+        type: image
+    intro:
+        label: Intro
+        type: text
+    text:
+        label: Text
+        type:  textarea

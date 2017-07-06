@@ -1,0 +1,29 @@
+title: Blog Home
+pages: false
+files: false
+icon: home
+fields:
+    page-meta:
+        label: Page meta
+        type: headline
+    title:
+        label: Title
+        type:  text
+    page-content:
+        label: Page content
+        type: headline
+    text:
+        label: Text
+        type:  textarea
+    page-options:
+        label: Page options
+        type: headline
+    main:
+        label: Main article
+        type: select
+        options: query
+        query:
+            fetch: pages
+            template: blog_article
+            value: '{{uri}}'
+        help: Choose the featured article in the home page

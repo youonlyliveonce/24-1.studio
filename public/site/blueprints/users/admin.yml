@@ -1,0 +1,6 @@
+fields:
+  bio:
+    label: Bio
+    type: textarea
+    placeholder: Tell something about yourself
+    icon: user
