@@ -42,7 +42,7 @@
 
         <div class="tag-links">
             <?php foreach(str::split($featured->tags()) as $tag): ?>
-                <a href="<?= url('results/tag:' . urlencode($tag)) ?>"><?= $tag; ?></a>
+                <a href="<?= url('/<?= $site->language() ?>/blog-results/tag:' . urlencode($tag)) ?>"><?= $tag; ?></a>
             <?php endforeach ?>
         </div>
 

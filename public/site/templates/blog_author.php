@@ -1,4 +1,4 @@
-<?php snippet('maagzine/header', array('site' => $site, 'pages' => $pages)) ?>
+<?php snippet('magazine/header', array('site' => $site, 'pages' => $pages)) ?>
 
 <main class="site-main">
 
@@ -24,11 +24,11 @@
 
 		<hr>
 
-		<?php $articles = $pages->children()->visible()->filterBy('template', 'article')->filterBy('author', $user)->sortBy('date', 'desc')->paginate(9); ?>
+		<?php $articles = $pages->children()->visible()->filterBy('template', 'blog_article')->filterBy('author', $user)->sortBy('date', 'desc')->paginate(9); ?>
 
 		<?php if($articles->count()): ?>
 
-			<?php snippet('maagzine/masonry', array('articles' => $articles)) ?>
+			<?php snippet('magazine/masonry', array('articles' => $articles)) ?>
 
 		<?php else : ?>
 
@@ -36,10 +36,10 @@
 
 		<?php endif ?>
 
-		<?php snippet('maagzine/pagination', array('articles' => $articles)) ?>
+		<?php snippet('magazine/pagination', array('articles' => $articles)) ?>
 
 	</div><!-- .container -->
 
 </main>
 
-<?php snippet('maagzine/footer', array('site' => $site, 'pages' => $pages)) ?>
+<?php snippet('magazine/footer', array('site' => $site, 'pages' => $pages)) ?>

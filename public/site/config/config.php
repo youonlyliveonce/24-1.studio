@@ -48,4 +48,16 @@ c::set('languages', array(
 	)
 ));
 
+// Routing for authors page
+c::set('routes', array(
+  array(
+      'pattern' => '(:all)/blog-author/(:any)',
+      'action'  => function($lang, $user) {
+        $site = kirby()->site();
+        $pages = $site->pages();
+        tpl::load(kirby()->roots()->templates() . DS . 'blog_author.php', array('user' => $user, 'site' => $site, 'pages' => $pages), false);
+      }
+  )
+));
+
 // c::set('language.detect', true);

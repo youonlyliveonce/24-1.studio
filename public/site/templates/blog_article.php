@@ -42,7 +42,7 @@
 
 					<div class="tag-links">
 						<?php foreach(str::split($page->tags()) as $tag): ?>
-							<a href="<?= url('tag:' . urlencode($tag)) ?>"><?= $tag; ?></a>
+							<a href="<?= url('/' . $site->language() . '/blog-results/tag:' . urlencode($tag)) ?>"><?= $tag; ?></a>
 						<?php endforeach ?>
 					</div>
 
@@ -52,11 +52,11 @@
 
 					<?php $user = $page->author(); ?>
 
-					<div class="entry-meta">
-						by <a class="author-link" href="<?= $site->url() ?>/author/<?= $user ?>" rel="author">
-						<?= $site->user($user)->firstName() . " " . $site->user($user)->lastName() ?>
-					</a> on <time datetime="<?= $page->date('c') ?>"><?= $page->date('M d, Y') ?></time>
-					</div>
+					<!-- <div class="entry-meta">  -->
+						<!-- by <a class="author-link" href="<?php /*echo url('/' . $site->language() . '/blog-author/' . $user) */ ?>" rel="author"> -->
+						<!-- <?php /* echo  $site->user($user)->firstName() . " " . $site->user($user)->lastName() */ ?> -->
+					<!-- </a> on <time datetime="<?php /* echo $page->date('c') */?>"><?php /* ehco $page->date('M d, Y') */?></time> -->
+				<!-- </div> -->
 
 				</div>
 
