@@ -1,6 +1,6 @@
 title: Blog Articles
 pages:
-    template: blog-article
+    template: blog_article
     num: date
     sort: flip
 options:
