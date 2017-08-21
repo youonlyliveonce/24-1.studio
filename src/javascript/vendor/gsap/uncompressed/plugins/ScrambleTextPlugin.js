@@ -1,9 +1,9 @@
 /*!
- * VERSION: 0.2.2
- * DATE: 2014-12-31
- * UPDATES AND DOCS AT: http://www.greensock.com
+ * VERSION: 0.4.1
+ * DATE: 2017-06-19
+ * UPDATES AND DOCS AT: http://greensock.com
  *
- * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
  * ScrambleTextPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
  * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
  * This work is subject to the software agreement that was issued with your membership.
@@ -63,15 +63,18 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			},
 			ScrambleTextPlugin = _gsScope._gsDefine.plugin({
 				propName: "scrambleText",
-				version: "0.2.2",
+				version: "0.4.1",
 				API: 2,
 				overwriteProps:["scrambleText","text"],
 
 				//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
-				init: function(target, value, tween) {
+				init: function(target, value, tween, index) {
 					this._prop = ("innerHTML" in target) ? "innerHTML" : ("textContent" in target) ? "textContent" : 0; // SVG text in IE doesn't have innerHTML, but it does have textContent.
 					if (!this._prop) {
 						return false;
+					}
+					if (typeof(value) === "function") {
+						value = value(index, target);
 					}
 					this._target = target;
 					if (typeof(value) !== "object") {
@@ -106,6 +109,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					this._revealDelay = value.revealDelay || 0;
 					this._tweenLength = (value.tweenLength !== false);
 					this._tween = tween;
+					this._rightToLeft = !!value.rightToLeft;
 					return true;
 				},
 
@@ -115,7 +119,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 						delim = this._delimiter,
 						time = this._tween._time,
 						timeDif = time - this._prevScrambleTime,
-						i, newText, oldText, applyNew, applyOld, str;
+						i, startText, endText, applyNew, applyOld, str, startClass, endClass;
 					if (this._revealDelay) {
 						if (this._tween.vars.runBackwards) {
 							time = this._tween._duration - time; //invert the time for from() tweens
@@ -127,23 +131,43 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					} else if (ratio > 1) {
 						ratio = 1;
 					}
+					if (this._rightToLeft) {
+						ratio = 1 - ratio;
+					}
 					i = (ratio * l + 0.5) | 0;
-					newText = this._text.slice(0, i).join(delim);
-					oldText = this._original.slice(i).join(delim);
 					if (ratio) {
 						if (timeDif > this._speed || timeDif < -this._speed) {
 							this._setIndex = (this._setIndex + ((Math.random() * 19) | 0)) % 20;
 							this._chars = this._charSet.sets[this._setIndex];
 							this._prevScrambleTime += timeDif;
 						}
-						oldText = this._chars.substr(newText.length, ((this._length + (this._tweenLength ? 1 - ((ratio = 1 - ratio) * ratio * ratio * ratio) : 1) * this._lengthDif) - newText.length + 0.5) | 0);
-					}
-					if (this._hasClass) {
-						applyNew = (this._newClass && i !== 0);
-						applyOld = (this._oldClass && i !== l);
-						str = (applyNew ? "<span class='" + this._newClass + "'>" : "") + newText + (applyNew ? "</span>" : "") + (applyOld ? "<span class='" + this._oldClass + "'>" : "") + delim + oldText + (applyOld ? "</span>" : "");
+						endText = this._chars;
 					} else {
-						str = newText + delim + oldText;
+						endText = this._original.join(delim);
+					}
+
+					if (this._rightToLeft) {
+						if (ratio === 1 && (this._tween.vars.runBackwards || this._tween.data === "isFromStart")) { //special case for from() tweens
+							startText = "";
+							endText = this._original.join(delim);
+						} else {
+							startText = endText.substr(0, ((this._length + (this._tweenLength ? 1 - (ratio * ratio * ratio) : 1) * this._lengthDif) - (l - i) + 0.5) | 0);
+							endText = this._text.slice(i).join(delim);
+						}
+
+					} else {
+						startText = this._text.slice(0, i).join(delim);
+						endText = endText.substr(i, ((this._length + (this._tweenLength ? 1 - ((ratio = 1 - ratio) * ratio * ratio * ratio) : 1) * this._lengthDif) - i + 0.5) | 0);
+					}
+
+					if (this._hasClass) {
+						startClass = this._rightToLeft ? this._oldClass : this._newClass;
+						endClass = this._rightToLeft ? this._newClass : this._oldClass;
+						applyNew = (startClass && i !== 0);
+						applyOld = (endClass && i !== l);
+						str = (applyNew ? "<span class='" + startClass + "'>" : "") + startText + (applyNew ? "</span>" : "") + (applyOld ? "<span class='" + endClass + "'>" : "") + delim + endText + (applyOld ? "</span>" : "");
+					} else {
+						str = startText + delim + endText;
 					}
 					this._target[this._prop] = (this._fillChar === "&nbsp;" && str.indexOf("  ") !== -1) ? str.split("  ").join("&nbsp;&nbsp;") : str;
 				}
@@ -159,3 +183,17 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
 
 }); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
+
+//export to AMD/RequireJS and CommonJS/Node (precursor to full modular build system coming at a later date)
+(function(name) {
+	"use strict";
+	var getGlobal = function() {
+		return (_gsScope.GreenSockGlobals || _gsScope)[name];
+	};
+	if (typeof(module) !== "undefined" && module.exports) { //node
+		require("../TweenLite.js");
+		module.exports = getGlobal();
+	} else if (typeof(define) === "function" && define.amd) { //AMD
+		define(["TweenLite"], getGlobal);
+	}
+}("ScrambleTextPlugin"));

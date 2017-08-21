@@ -1,9 +1,9 @@
 /*!
- * VERSION: beta 0.6.3
- * DATE: 2014-12-31
- * UPDATES AND DOCS AT: http://www.greensock.com
+ * VERSION: 0.6.6
+ * DATE: 2017-06-29
+ * UPDATES AND DOCS AT: http://greensock.com
  *
- * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
  * This work is subject to the terms at http://greensock.com/standard-license or for
  * Club GreenSock members, the software agreement that was issued with your membership.
  * 
@@ -21,13 +21,13 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				TweenPlugin.call(this, "cssRule");
 				this._overwriteProps.length = 0;
 			},
-			_doc = window.document,
+			_doc = _gsScope.document,
 			_superSetRatio = CSSPlugin.prototype.setRatio,
 			p = CSSRulePlugin.prototype = new CSSPlugin();
 
 		p._propName = "cssRule";
 		p.constructor = CSSRulePlugin;
-		CSSRulePlugin.version = "0.6.3";
+		CSSRulePlugin.version = "0.6.6";
 		CSSRulePlugin.API = 2;
 
 		/**
@@ -44,7 +44,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				i = ss.length,
 				pseudo = (selector.charAt(0) === ":"),
 				j, curSS, cs, a;
-			selector = (pseudo ? "" : ",") + selector.toLowerCase() + ","; //note: old versions of IE report tag name selectors as upper case, so we just change everything to lowercase.
+			selector = (pseudo ? "" : ",") + selector.split("::").join(":").toLowerCase() + ","; //note: old versions of IE report tag name selectors as upper case, so we just change everything to lowercase.
 			if (pseudo) {
 				a = [];
 			}
@@ -103,3 +103,17 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 	}, true);
 	
 }); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
+
+//export to AMD/RequireJS and CommonJS/Node (precursor to full modular build system coming at a later date)
+(function(name) {
+	"use strict";
+	var getGlobal = function() {
+		return (_gsScope.GreenSockGlobals || _gsScope)[name];
+	};
+	if (typeof(module) !== "undefined" && module.exports) { //node
+		require("../TweenLite.js");
+		module.exports = getGlobal();
+	} else if (typeof(define) === "function" && define.amd) { //AMD
+		define(["TweenLite"], getGlobal);
+	}
+}("CSSRulePlugin"));

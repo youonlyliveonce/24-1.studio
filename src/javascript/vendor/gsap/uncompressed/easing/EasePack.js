@@ -1,9 +1,9 @@
 /*!
- * VERSION: beta 1.15.2
- * DATE: 2015-01-27
+ * VERSION: 1.15.6
+ * DATE: 2017-06-19
  * UPDATES AND DOCS AT: http://greensock.com
  *
- * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
  * This work is subject to the terms at http://greensock.com/standard-license or for
  * Club GreenSock members, the software agreement that was issued with your membership.
  * 
@@ -112,10 +112,11 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
 
 		//SteppedEase
-		SteppedEase = _class("easing.SteppedEase", function(steps) {
+		SteppedEase = _class("easing.SteppedEase", function(steps, immediateStart) {
 				steps = steps || 1;
 				this._p1 = 1 / steps;
-				this._p2 = steps + 1;
+				this._p2 = steps + (immediateStart ? 0 : 1);
+				this._p3 = immediateStart ? 1 : 0;
 			}, true);
 		p = SteppedEase.prototype = new Ease();	
 		p.constructor = SteppedEase;
@@ -125,10 +126,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			} else if (p >= 1) {
 				p = 0.999999999;
 			}
-			return ((this._p2 * p) >> 0) * this._p1;
+			return (((this._p2 * p) | 0) + this._p3) * this._p1;
 		};
-		p.config = SteppedEase.config = function(steps) {
-			return new SteppedEase(steps);
+		p.config = SteppedEase.config = function(steps, immediateStart) {
+			return new SteppedEase(steps, immediateStart);
 		};
 
 
@@ -343,3 +344,17 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 	}, true);
 
 }); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
+
+//export to AMD/RequireJS and CommonJS/Node (precursor to full modular build system coming at a later date)
+(function() {
+	"use strict";
+	var getGlobal = function() {
+		return (_gsScope.GreenSockGlobals || _gsScope);
+	};
+	if (typeof(module) !== "undefined" && module.exports) { //node
+		require("../TweenLite.js");
+		module.exports = getGlobal();
+	} else if (typeof(define) === "function" && define.amd) { //AMD
+		define(["TweenLite"], getGlobal);
+	}
+}());

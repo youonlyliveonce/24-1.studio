@@ -1,9 +1,9 @@
 /*!
- * VERSION: 1.18.0
- * DATE: 2015-08-29
+ * VERSION: 1.20.2
+ * DATE: 2017-06-30
  * UPDATES AND DOCS AT: http://greensock.com
  *
- * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
  * This work is subject to the terms at http://greensock.com/standard-license or for
  * Club GreenSock members, the software agreement that was issued with your membership.
  * 
@@ -55,7 +55,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					p, val;
 				for (p in alt) {
 					val = alt[p];
-					vars[p] = (typeof(val) === "function") ? val.call(targets[i], i) : val[i % val.length];
+					vars[p] = (typeof(val) === "function") ? val(i, targets[i]) : val[i % val.length];
 				}
 				delete vars.cycle;
 			},
@@ -69,7 +69,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			},
 			p = TimelineLite.prototype = new SimpleTimeline();
 
-		TimelineLite.version = "1.18.0";
+		TimelineLite.version = "1.20.2";
 		p.constructor = TimelineLite;
 		p.kill()._gc = p._forcingPlayhead = p._hasPause = false;
 
@@ -136,6 +136,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				}
 				if (cycle) {
 					_applyCycle(copy, targets, i);
+					if (copy.duration != null) {
+						duration = copy.duration;
+						delete copy.duration;
+					}
 				}
 				tl.to(targets[i], duration, copy, i * stagger);
 			}
@@ -229,6 +233,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
 			SimpleTimeline.prototype.add.call(this, value, position);
 
+			if (value._time) { //in case, for example, the _startTime is moved on a tween that has already rendered. Imagine it's at its end state, then the startTime is moved WAY later (after the end of this timeline), it should render at its beginning.
+				value.render((this.rawTime() - value._startTime) * value._timeScale, false, false);
+			}
+
 			//if the timeline has already ended but the inserted tween/timeline extends the duration, we should enable this timeline again so that it renders properly. We should also align the playhead with the parent timeline's when appropriate.
 			if (this._gc || this._time === this._duration) if (!this._paused) if (this._duration < this.duration()) {
 				//in case any of the ancestors had completed but should now be enabled...
@@ -270,8 +278,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			var last = this._last;
 			if (!last) {
 				this._time = this._totalTime = this._duration = this._totalDuration = 0;
-			} else if (this._time > last._startTime + last._totalDuration / last._timeScale) {
-				this._time = this.duration();
+			} else if (this._time > this.duration()) {
+				this._time = this._duration;
 				this._totalTime = this._totalDuration;
 			}
 			return this;
@@ -312,7 +320,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		};
 
 		p._parseTimeOrLabel = function(timeOrLabel, offsetOrLabel, appendIfAbsent, ignore) {
-			var i;
+			var clippedDuration, i;
 			//if we're about to add a tween/timeline (or an array of them) that's already a child of this timeline, we should remove it first so that it doesn't contaminate the duration().
 			if (ignore instanceof Animation && ignore.timeline === this) {
 				this.remove(ignore);
@@ -324,22 +332,23 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					}
 				}
 			}
+			clippedDuration = (this.duration() > 99999999999) ? this.recent().endTime(false) : this._duration; //in case there's a child that infinitely repeats, users almost never intend for the insertion point of a new child to be based on a SUPER long value like that so we clip it and assume the most recently-added child's endTime should be used instead.
 			if (typeof(offsetOrLabel) === "string") {
-				return this._parseTimeOrLabel(offsetOrLabel, (appendIfAbsent && typeof(timeOrLabel) === "number" && this._labels[offsetOrLabel] == null) ? timeOrLabel - this.duration() : 0, appendIfAbsent);
+				return this._parseTimeOrLabel(offsetOrLabel, (appendIfAbsent && typeof(timeOrLabel) === "number" && this._labels[offsetOrLabel] == null) ? timeOrLabel - clippedDuration : 0, appendIfAbsent);
 			}
 			offsetOrLabel = offsetOrLabel || 0;
 			if (typeof(timeOrLabel) === "string" && (isNaN(timeOrLabel) || this._labels[timeOrLabel] != null)) { //if the string is a number like "1", check to see if there's a label with that name, otherwise interpret it as a number (absolute value).
 				i = timeOrLabel.indexOf("=");
 				if (i === -1) {
 					if (this._labels[timeOrLabel] == null) {
-						return appendIfAbsent ? (this._labels[timeOrLabel] = this.duration() + offsetOrLabel) : offsetOrLabel;
+						return appendIfAbsent ? (this._labels[timeOrLabel] = clippedDuration + offsetOrLabel) : offsetOrLabel;
 					}
 					return this._labels[timeOrLabel] + offsetOrLabel;
 				}
 				offsetOrLabel = parseInt(timeOrLabel.charAt(i-1) + "1", 10) * Number(timeOrLabel.substr(i+1));
-				timeOrLabel = (i > 1) ? this._parseTimeOrLabel(timeOrLabel.substr(0, i-1), 0, appendIfAbsent) : this.duration();
+				timeOrLabel = (i > 1) ? this._parseTimeOrLabel(timeOrLabel.substr(0, i-1), 0, appendIfAbsent) : clippedDuration;
 			} else if (timeOrLabel == null) {
-				timeOrLabel = this.duration();
+				timeOrLabel = clippedDuration;
 			}
 			return Number(timeOrLabel) + offsetOrLabel;
 		};
@@ -369,14 +378,14 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				prevStart = this._startTime,
 				prevTimeScale = this._timeScale,
 				prevPaused = this._paused,
-				tween, isComplete, next, callback, internalForce, pauseTween;
-			if (time >= totalDur) {
+				tween, isComplete, next, callback, internalForce, pauseTween, curTime;
+			if (time >= totalDur - 0.0000001 && time >= 0) { //to work around occasional floating point math artifacts.
 				this._totalTime = this._time = totalDur;
 				if (!this._reversed) if (!this._hasPausedChild()) {
 					isComplete = true;
 					callback = "onComplete";
 					internalForce = !!this._timeline.autoRemoveChildren; //otherwise, if the animation is unpaused/activated after it's already finished, it doesn't get removed from the parent timeline.
-					if (this._duration === 0) if (time === 0 || this._rawPrevTime < 0 || this._rawPrevTime === _tinyNum) if (this._rawPrevTime !== time && this._first) {
+					if (this._duration === 0) if ((time <= 0 && time >= -0.0000001) || this._rawPrevTime < 0 || this._rawPrevTime === _tinyNum) if (this._rawPrevTime !== time && this._first) {
 						internalForce = true;
 						if (this._rawPrevTime > _tinyNum) {
 							callback = "onReverseComplete";
@@ -456,17 +465,18 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				this._active = true;  //so that if the user renders the timeline (as opposed to the parent timeline rendering it), it is forced to re-render and align it with the proper time/frame on the next rendering cycle. Maybe the timeline already finished but the user manually re-renders it as halfway done, for example.
 			}
 
-			if (prevTime === 0) if (this.vars.onStart) if (this._time !== 0) if (!suppressEvents) {
+			if (prevTime === 0) if (this.vars.onStart) if (this._time !== 0 || !this._duration) if (!suppressEvents) {
 				this._callback("onStart");
 			}
 
-			if (this._time >= prevTime) {
+			curTime = this._time;
+			if (curTime >= prevTime) {
 				tween = this._first;
 				while (tween) {
 					next = tween._next; //record it here because the value could change after rendering...
-					if (this._paused && !prevPaused) { //in case a tween pauses the timeline when rendering
+					if (curTime !== this._time || (this._paused && !prevPaused)) { //in case a tween pauses or seeks the timeline when rendering, like inside of an onUpdate/onComplete
 						break;
-					} else if (tween._active || (tween._startTime <= this._time && !tween._paused && !tween._gc)) {
+					} else if (tween._active || (tween._startTime <= curTime && !tween._paused && !tween._gc)) {
 						if (pauseTween === tween) {
 							this.pause();
 						}
@@ -482,7 +492,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				tween = this._last;
 				while (tween) {
 					next = tween._prev; //record it here because the value could change after rendering...
-					if (this._paused && !prevPaused) { //in case a tween pauses the timeline when rendering
+					if (curTime !== this._time || (this._paused && !prevPaused)) { //in case a tween pauses or seeks the timeline when rendering, like inside of an onUpdate/onComplete
 						break;
 					} else if (tween._active || (tween._startTime <= prevTime && !tween._paused && !tween._gc)) {
 						if (pauseTween === tween) {
@@ -725,10 +735,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				}
 				return this._totalDuration;
 			}
-			if (this.totalDuration() !== 0) if (value !== 0) {
-				this.timeScale(this._totalDuration / value);
-			}
-			return this;
+			return (value && this.totalDuration()) ? this.timeScale(this._totalDuration / value) : this;
 		};
 
 		p.paused = function(value) {
@@ -753,8 +760,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			return (tl === Animation._rootFramesTimeline);
 		};
 
-		p.rawTime = function() {
-			return this._paused ? this._totalTime : (this._timeline.rawTime() - this._startTime) * this._timeScale;
+		p.rawTime = function(wrapRepeats) {
+			return (wrapRepeats && (this._paused || (this._repeat && this.time() > 0 && this.totalProgress() < 1))) ? this._totalTime % (this._duration + this._repeatDelay) : this._paused ? this._totalTime : (this._timeline.rawTime(wrapRepeats) - this._startTime) * this._timeScale;
 		};
 
 		return TimelineLite;
@@ -770,10 +777,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 	var getGlobal = function() {
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
-	if (typeof(define) === "function" && define.amd) { //AMD
-		define(["TweenLite"], getGlobal);
-	} else if (typeof(module) !== "undefined" && module.exports) { //node
+	if (typeof(module) !== "undefined" && module.exports) { //node
 		require("./TweenLite.js"); //dependency
 		module.exports = getGlobal();
+	} else if (typeof(define) === "function" && define.amd) { //AMD
+		define(["TweenLite"], getGlobal);
 	}
 }("TimelineLite"));

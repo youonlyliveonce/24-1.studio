@@ -1,9 +1,9 @@
 /*!
- * VERSION: 0.0.6
- * DATE: 2015-08-22
+ * VERSION: 0.1.4
+ * DATE: 2017-06-19
  * UPDATES AND DOCS AT: http://greensock.com
  *
- * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
  * DrawSVGPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
  * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
  * This work is subject to the software agreement that was issued with your membership.
@@ -12,12 +12,18 @@
  */
 var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window; //helps ensure compatibility with AMD/RequireJS and CommonJS/Node
 (_gsScope._gsQueue || (_gsScope._gsQueue = [])).push( function() {
-	
+
 	"use strict";
 
-	function getDistance(x1, y1, x2, y2) {
-		x2 = parseFloat(x2) - parseFloat(x1);
-		y2 = parseFloat(y2) - parseFloat(y1);
+	var _doc = _gsScope.document,
+		_getComputedStyle = _doc.defaultView ? _doc.defaultView.getComputedStyle : function() {},
+		_numbersExp = /(?:(-|-=|\+=)?\d*\.?\d*(?:e[\-+]?\d+)?)[0-9]/ig,
+		_isEdge = (((_gsScope.navigator || {}).userAgent || "").indexOf("Edge") !== -1), //Microsoft Edge has a bug that causes it not to redraw the path correctly if the stroke-linecap is anything other than "butt" (like "round") and it doesn't match the stroke-linejoin. A way to trigger it is to change the stroke-miterlimit, so we'll only do that if/when we have to (to maximize performance)
+		DrawSVGPlugin;
+
+	function getDistance(x1, y1, x2, y2, scaleX, scaleY) {
+		x2 = (parseFloat(x2 || 0) - parseFloat(x1 || 0)) * scaleX;
+		y2 = (parseFloat(y2 || 0) - parseFloat(y1 || 0)) * scaleY;
 		return Math.sqrt(x2 * x2 + y2 * y2);
 	}
 
@@ -53,51 +59,58 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		}
 		element = unwrap(element);
 		var type = element.tagName.toLowerCase(),
-			length, bbox, points, point, prevPoint, i, rx, ry;
+			scaleX = 1,
+			scaleY = 1,
+			length, bbox, points, prevPoint, i, rx, ry;
+		if (element.getAttribute("vector-effect") === "non-scaling-stroke") { //non-scaling-stroke basically scales the shape and then strokes it at the screen-level (after transforms), thus we need to adjust the length accordingly.
+			scaleY = element.getScreenCTM();
+			scaleX = scaleY.a;
+			scaleY = scaleY.d;
+		}
+		try { //IE bug: calling <path>.getTotalLength() locks the repaint area of the stroke to whatever its current dimensions are on that frame/tick. To work around that, we must call getBBox() to force IE to recalculate things.
+			bbox = element.getBBox(); //solely for fixing bug in IE - we don't actually use the bbox.
+		} catch (e) {
+			//firefox has a bug that throws an error if the element isn't visible.
+		}
+		if ((!bbox || (!bbox.width && !bbox.height)) && (type === "rect" || type === "circle" || type === "ellipse")) { //if the element isn't visible, try to discern width/height using its attributes.
+			bbox = {
+				width: parseFloat( element.getAttribute( (type === "rect") ? "width" : (type === "circle") ? "r" : "rx")),
+				height: parseFloat( element.getAttribute( (type === "rect") ? "height" : (type === "circle") ? "r" : "ry") )
+			};
+			if (type !== "rect") {
+				bbox.width *= 2;
+				bbox.height *= 2;
+			}
+		}
 		if (type === "path") {
-			//IE bug: calling getTotalLength() locks the repaint area of the stroke to whatever its current dimensions are on that frame/tick. To work around that, we must call getBBox() to force IE to recalculate things.
 			prevPoint = element.style.strokeDasharray;
 			element.style.strokeDasharray = "none";
 			length = element.getTotalLength() || 0;
-			//bbox = element.getBBox(); //solely for fixing bug in IE - we don't actually use the bbox.
+			if (scaleX !== scaleY) {
+				console.log("Warning: <path> length cannot be measured accurately when vector-effect is non-scaling-stroke and the element isn't proportionally scaled.");
+			}
+			length *= (scaleX + scaleY) / 2;
 			element.style.strokeDasharray = prevPoint;
 		} else if (type === "rect") {
-			bbox = element.getBBox();
-			length = (bbox.width + bbox.height) * 2;
-		} else if (type === "circle") {
-			length = Math.PI * 2 * parseFloat(element.getAttribute("r"));
+			length = bbox.width * 2 * scaleX + bbox.height * 2 * scaleY;
 		} else if (type === "line") {
-			length = getDistance(element.getAttribute("x1"), element.getAttribute("y1"), element.getAttribute("x2"), element.getAttribute("y2"));
+			length = getDistance(element.getAttribute("x1"), element.getAttribute("y1"), element.getAttribute("x2"), element.getAttribute("y2"), scaleX, scaleY);
 		} else if (type === "polyline" || type === "polygon") {
-			points = element.getAttribute("points").split(" ");
-			length = 0;
-			prevPoint = points[0].split(",");
+			points = element.getAttribute("points").match(_numbersExp) || [];
 			if (type === "polygon") {
-				points.push(points[0]);
-				if (points[0].indexOf(",") === -1) {
-					points.push(points[1]);
-				}
+				points.push(points[0], points[1]);
 			}
-			for (i = 1; i < points.length; i++) {
-				point = points[i].split(",");
-				if (point.length === 1) {
-					point[1] = points[i++];
-				}
-				if (point.length === 2) {
-					length += getDistance(prevPoint[0], prevPoint[1], point[0], point[1]) || 0;
-					prevPoint = point;
-				}
+			length = 0;
+			for (i = 2; i < points.length; i+=2) {
+				length += getDistance(points[i-2], points[i-1], points[i], points[i+1], scaleX, scaleY) || 0;
 			}
-		} else if (type === "ellipse") {
-			rx = parseFloat(element.getAttribute("rx"));
-			ry = parseFloat(element.getAttribute("ry"));
+		} else if (type === "circle" || type === "ellipse") {
+			rx = (bbox.width / 2) * scaleX;
+			ry = (bbox.height / 2) * scaleY;
 			length = Math.PI * ( 3 * (rx + ry) - Math.sqrt((3 * rx + ry) * (rx + 3 * ry)) );
 		}
 		return length || 0;
 	}
-
-	var _getComputedStyle = document.defaultView ? document.defaultView.getComputedStyle : function() {},
-		DrawSVGPlugin;
 
 	function getPosition(element, length) {
 		if (!element) {
@@ -122,17 +135,20 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 	DrawSVGPlugin = _gsScope._gsDefine.plugin({
 		propName: "drawSVG",
 		API: 2,
-		version: "0.0.6",
+		version: "0.1.4",
 		global: true,
 		overwriteProps: ["drawSVG"],
 
-		init: function(target, value, tween) {
+		init: function(target, value, tween, index) {
 			if (!target.getBBox) {
 				return false;
 			}
 			var length = getLength(target) + 1,
-				start, end, overage;
+				start, end, overage, cs;
 			this._style = target.style;
+			if (typeof(value) === "function") {
+				value = value(index, target);
+			}
 			if (value === true || value === "true") {
 				value = "0 100%";
 			} else if (!value) {
@@ -153,6 +169,14 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				this._offset = -start[0];
 				this._addTween(this, "_dash", this._dash, (end[1] - end[0]) || 0.00001, "drawSVG");
 				this._addTween(this, "_offset", this._offset, -end[0], "drawSVG");
+			}
+			if (_isEdge) { //to work around a bug in Microsoft Edge, animate the stroke-miterlimit by 0.0001 just to trigger the repaint (only necessary if stroke-linecap isn't "butt"; also unnecessary if it's "round" and stroke-linejoin is also "round"). Imperceptible, relatively high-performance, and effective. Another option was to set the "d" <path> attribute to its current value on every tick, but that seems like it'd be much less performant.
+				cs = _getComputedStyle(target);
+				end = cs.strokeLinecap;
+				if (end !== "butt" && end !== cs.strokeLinejoin) {
+					end = parseFloat(cs.strokeMiterlimit);
+					this._addTween(target.style, "strokeMiterlimit", end, end + 0.0001, "strokeMiterlimit");
+				}
 			}
 			return true;
 		},
@@ -176,3 +200,16 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 	DrawSVGPlugin.getPosition = getPosition;
 
 }); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
+//export to AMD/RequireJS and CommonJS/Node (precursor to full modular build system coming at a later date)
+(function(name) {
+	"use strict";
+	var getGlobal = function() {
+		return (_gsScope.GreenSockGlobals || _gsScope)[name];
+	};
+	if (typeof(module) !== "undefined" && module.exports) { //node
+		require("../TweenLite.js");
+		module.exports = getGlobal();
+	} else if (typeof(define) === "function" && define.amd) { //AMD
+		define(["TweenLite"], getGlobal);
+	}
+}("DrawSVGPlugin"));

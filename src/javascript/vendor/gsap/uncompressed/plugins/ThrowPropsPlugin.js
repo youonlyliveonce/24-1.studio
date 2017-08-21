@@ -1,9 +1,9 @@
 /*!
- * VERSION: 0.9.9
- * DATE: 2015-04-28
+ * VERSION: 0.11.1
+ * DATE: 2017-06-19
  * UPDATES AND DOCS AT: http://greensock.com
  *
- * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
  * ThrowPropsPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
  * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
  * This work is subject to the software agreement that was issued with your membership.
@@ -26,31 +26,62 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			_globals = _gsScope._gsDefine.globals,
 			_recordEndMode = false,//in a typical throwProps css tween that has an "end" defined as a function, it grabs that value initially when the tween is rendered, then again when we calculate the necessary duration, and then a 3rd time after we invalidate() the tween, so we toggle _recordEndMode to true when we're about to begin such a tween which tells the engine to grab the end value(s) once and record them as "max" and "min" on the throwProps object, thus we can skip those extra calls. Then we set it back to false when we're done with our fancy initialization routine.
 			_transforms = {x:1,y:1,z:2,scale:1,scaleX:1,scaleY:1,rotation:1,rotationZ:1,rotationX:2,rotationY:2,skewX:1,skewY:1,xPercent:1,yPercent:1},
-			_getClosest = function(n, values, max, min) {
+			_getClosest = function(n, values, max, min, radius) {
 				var i = values.length,
 					closest = 0,
 					absDif = _max,
-					val, dif;
-				while (--i > -1) {
-					val = values[i];
-					dif = val - n;
-					if (dif < 0) {
-						dif = -dif;
+					val, dif, p, dist;
+				if (typeof(n) === "object") {
+					while (--i > -1) {
+						val = values[i];
+						dif = 0;
+						for (p in n) {
+							dist = val[p] - n[p];
+							dif += dist * dist;
+						}
+						if (dif < absDif) {
+							closest = i;
+							absDif = dif;
+						}
 					}
-					if (dif < absDif && val >= min && val <= max) {
-						closest = i;
-						absDif = dif;
+					if ((radius || _max) < _max && radius < Math.sqrt(absDif)) {
+						return n;
+					}
+				} else {
+					while (--i > -1) {
+						val = values[i];
+						dif = val - n;
+						if (dif < 0) {
+							dif = -dif;
+						}
+						if (dif < absDif && val >= min && val <= max) {
+							closest = i;
+							absDif = dif;
+						}
 					}
 				}
 				return values[closest];
 			},
-			_parseEnd = function(curProp, end, max, min) {
+			_parseEnd = function(curProp, end, max, min, name, radius) {
 				if (curProp.end === "auto") {
 					return curProp;
 				}
+				var endVar = curProp.end,
+					adjustedEnd, p;
 				max = isNaN(max) ? _max : max;
 				min = isNaN(min) ? -_max : min;
-				var adjustedEnd = (typeof(curProp.end) === "function") ? curProp.end(end) : (curProp.end instanceof Array) ? _getClosest(end, curProp.end, max, min) : Number(curProp.end);
+				if (typeof(end) === "object") { //for objects, like {x, y} where they're linked and we must pass an object to the function or find the closest value in an array.
+					adjustedEnd = end.calculated ? end : ((typeof(endVar) === "function") ? endVar(end) : _getClosest(end, endVar, max, min, radius)) || end;
+					if (!end.calculated) {
+						for (p in adjustedEnd) {
+							end[p] = adjustedEnd[p];
+						}
+						end.calculated = true;
+					}
+					adjustedEnd = adjustedEnd[name];
+				} else {
+					adjustedEnd = (typeof(endVar) === "function") ? endVar(end) : (endVar instanceof Array) ? _getClosest(end, endVar, max, min, radius) : Number(endVar);
+				}
 				if (adjustedEnd > max) {
 					adjustedEnd = max;
 				} else if (adjustedEnd < min) {
@@ -103,11 +134,33 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					ease = (vars.ease instanceof Ease) ? vars.ease : (!vars.ease) ? TweenLite.defaultEase : new Ease(vars.ease),
 					checkpoint = isNaN(throwPropsVars.checkpoint) ? 0.05 : Number(throwPropsVars.checkpoint),
 					resistance = isNaN(throwPropsVars.resistance) ? ThrowPropsPlugin.defaultResistance : Number(throwPropsVars.resistance),
-					p, curProp, curDuration, curVelocity, curResistance, curVal, end, curClippedDuration, tracker, unitFactor;
+					p, curProp, curDuration, curVelocity, curResistance, curVal, end, curClippedDuration, tracker, unitFactor,
+					linkedProps, linkedPropNames, i;
+
+				if (throwPropsVars.linkedProps) { //when there are linkedProps (typically "x,y" where snapping has to factor in multiple properties, we must first populate an object with all of those end values, then feed it to the function that make any necessary alterations. So the point of this first loop is to simply build an object (like {x:100, y:204.5}) for feeding into that function which we'll do later in the "real" loop.
+					linkedPropNames = throwPropsVars.linkedProps.split(",");
+					linkedProps = {};
+					for (i = 0; i < linkedPropNames.length; i++) {
+						p = linkedPropNames[i];
+						curProp = throwPropsVars[p];
+						if (curProp) {
+							if (curProp.velocity !== undefined && typeof(curProp.velocity) === "number") {
+								curVelocity = Number(curProp.velocity) || 0;
+							} else {
+								tracker = tracker || VelocityTracker.getByTarget(target);
+								curVelocity =  (tracker && tracker.isTrackingProp(p)) ? tracker.getVelocity(p) : 0;
+							}
+							curResistance = isNaN(curProp.resistance) ? resistance : Number(curProp.resistance);
+							curDuration = (curVelocity * curResistance > 0) ? curVelocity / curResistance : curVelocity / -curResistance;
+							curVal = (typeof(target[p]) === "function") ? target[ ((p.indexOf("set") || typeof(target["get" + p.substr(3)]) !== "function") ? p : "get" + p.substr(3)) ]() : target[p] || 0;
+							linkedProps[p] = curVal + _calculateChange(curVelocity, ease, curDuration, checkpoint);
+						}
+					}
+				}
 
 				for (p in throwPropsVars) {
 
-					if (p !== "resistance" && p !== "checkpoint" && p !== "preventOvershoot") {
+					if (p !== "resistance" && p !== "checkpoint" && p !== "preventOvershoot" && p !== "linkedProps" && p !== "radius") {
 						curProp = throwPropsVars[p];
 						if (typeof(curProp) !== "object") {
 							tracker = tracker || VelocityTracker.getByTarget(target);
@@ -119,6 +172,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 							}
 						}
 						if (typeof(curProp) === "object") {
+
 							if (curProp.velocity !== undefined && typeof(curProp.velocity) === "number") {
 								curVelocity = Number(curProp.velocity) || 0;
 							} else {
@@ -130,7 +184,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 							curVal = (typeof(target[p]) === "function") ? target[ ((p.indexOf("set") || typeof(target["get" + p.substr(3)]) !== "function") ? p : "get" + p.substr(3)) ]() : target[p] || 0;
 							end = curVal + _calculateChange(curVelocity, ease, curDuration, checkpoint);
 							if (curProp.end !== undefined) {
-								curProp = _parseEnd(curProp, end, curProp.max, curProp.min);
+								curProp = _parseEnd(curProp, (linkedProps && p in linkedProps) ? linkedProps : end, curProp.max, curProp.min, p, throwPropsVars.radius);
 								if (recordEnd || _recordEndMode) {
 									throwPropsVars[p] = _extend(curProp, throwPropsVars[p], "end");
 								}
@@ -179,7 +233,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
 
 		p.constructor = ThrowPropsPlugin;
-		ThrowPropsPlugin.version = "0.9.9";
+		ThrowPropsPlugin.version = "0.11.1";
 		ThrowPropsPlugin.API = 2;
 		ThrowPropsPlugin._autoCSS = true; //indicates that this plugin can be inserted into the "css" object using the autoCSS feature of TweenLite
 		ThrowPropsPlugin.defaultResistance = 100;
@@ -222,7 +276,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					hasResistance, val, p, data, tracker;
 				_cssVars = {};
 				for (p in e) {
-					if (p !== "resistance" && p !== "preventOvershoot") {
+					if (p !== "resistance" && p !== "preventOvershoot" && p !== "linkedProps" && p !== "radius") {
 						val = e[p];
 						if (typeof(val) === "object") {
 							if (val.velocity !== undefined && typeof(val.velocity) === "number") {
@@ -271,6 +325,12 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				if (e.resistance != null) {
 					_cssVars.resistance = e.resistance;
 				}
+				if (e.linkedProps != null) {
+					_cssVars.linkedProps = e.linkedProps;
+				}
+				if (e.radius != null) {
+					_cssVars.radius = e.radius;
+				}
 				if (e.preventOvershoot) {
 					_cssVars.preventOvershoot = true;
 				}
@@ -312,7 +372,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			}
 		};
 		
-		p._onInitTween = function(target, value, tween) {
+		p._onInitTween = function(target, value, tween, index) {
 			this.target = target;
 			this._props = [];
 			_last = this;
@@ -322,10 +382,34 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 				duration = tween._duration,
 				preventOvershoot = value.preventOvershoot,
 				cnt = 0,
-				p, curProp, curVal, isFunc, velocity, change1, end, change2, tracker;
-			for (p in value) {
-				if (p !== "resistance" && p !== "checkpoint" && p !== "preventOvershoot") {
+				p, curProp, curVal, isFunc, velocity, change1, end, change2, tracker,
+				linkedProps, linkedPropNames, i;
+
+			if (value.linkedProps) { //when there are linkedProps (typically "x,y" where snapping has to factor in multiple properties, we must first populate an object with all of those end values, then feed it to the function that make any necessary alterations. So the point of this first loop is to simply build an object (like {x:100, y:204.5}) for feeding into that function which we'll do later in the "real" loop.
+				linkedPropNames = value.linkedProps.split(",");
+				linkedProps = {};
+				for (i = 0; i < linkedPropNames.length; i++) {
+					p = linkedPropNames[i];
 					curProp = value[p];
+					if (curProp) {
+						if (curProp.velocity !== undefined && typeof(curProp.velocity) === "number") {
+							velocity = Number(curProp.velocity) || 0;
+						} else {
+							tracker = tracker || VelocityTracker.getByTarget(target);
+							velocity =  (tracker && tracker.isTrackingProp(p)) ? tracker.getVelocity(p) : 0;
+						}
+						curVal = (typeof(target[p]) === "function") ? target[ ((p.indexOf("set") || typeof(target["get" + p.substr(3)]) !== "function") ? p : "get" + p.substr(3)) ]() : target[p] || 0;
+						linkedProps[p] = curVal + _calculateChange(velocity, ease, duration, checkpoint);
+					}
+				}
+			}
+
+			for (p in value) {
+				if (p !== "resistance" && p !== "checkpoint" && p !== "preventOvershoot" && p !== "linkedProps" && p !== "radius") {
+					curProp = value[p];
+					if (typeof(curProp) === "function") {
+						curProp = curProp(index, target);
+					}
 					if (typeof(curProp) === "number") {
 						velocity = Number(curProp) || 0;
 					} else if (typeof(curProp) === "object" && !isNaN(curProp.velocity)) {
@@ -345,7 +429,7 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					if (typeof(curProp) === "object") {
 						end = curVal + change1;
 						if (curProp.end !== undefined) {
-							curProp = _parseEnd(curProp, end, curProp.max, curProp.min);
+							curProp = _parseEnd(curProp, (linkedProps && p in linkedProps) ? linkedProps : end, curProp.max, curProp.min, p, value.radius);
 							if (_recordEndMode) {
 								value[p] = _extend(curProp, value[p], "end");
 							}
@@ -381,12 +465,14 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			return TweenPlugin.prototype._kill.call(this, lookup);
 		};
 		
-		p._roundProps = function(lookup, value) {
+		p._mod = function(lookup) {
 			var p = this._props,
-				i = p.length;
+				i = p.length,
+				val;
 			while (--i > -1) {
-				if (lookup[p[i].p] || lookup.throwProps) {
-					p[i].r = value;
+				val = lookup[p[i].p] || lookup.throwProps;
+				if (typeof(val) === "function") {
+					p[i].m = val;
 				}
 			}
 		};
@@ -397,8 +483,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 			while (--i > -1) {
 				cp = this._props[i];
 				val = cp.s + cp.c1 * v + cp.c2 * v * v;
-				if (cp.r) {
-					val = Math.round(val);
+				if (cp.m) {
+					val = cp.m(val, this.target);
+				} else if (v === 1) {
+					val = ((val * 10000 + (val < 0 ? -0.5 : 0.5)) | 0) / 10000; //if we don't round things at the very end, binary math issues can creep in and cause snapping not to be exact (like landing on 20.000000000001 instead of 20).
 				}
 				if (cp.f) {
 					this.target[cp.p](val);
@@ -426,8 +514,9 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		var _first,	_initted, _time1, _time2,
 			_capsExp = /([A-Z])/g,
 			_empty = {},
+			_doc = _gsScope.document,
 			_transforms = {x:1,y:1,z:2,scale:1,scaleX:1,scaleY:1,rotation:1,rotationZ:1,rotationX:2,rotationY:2,skewX:1,skewY:1,xPercent:1,yPercent:1},
-			_getComputedStyle = document.defaultView ? document.defaultView.getComputedStyle : function() {},
+			_getComputedStyle = _doc.defaultView ? _doc.defaultView.getComputedStyle : function() {},
 			_getStyle = function(t, p, cs) {
 				var rv = (t._gsTransform || _empty)[p];
 				if (rv || rv === 0) {
@@ -638,10 +727,10 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 	var getGlobal = function() {
 		return (_gsScope.GreenSockGlobals || _gsScope)[name];
 	};
-	if (typeof(define) === "function" && define.amd) { //AMD
-		define(["TweenLite"], getGlobal);
-	} else if (typeof(module) !== "undefined" && module.exports) { //node
+	if (typeof(module) !== "undefined" && module.exports) { //node
 		require("../TweenLite.js");
 		module.exports = getGlobal();
+	} else if (typeof(define) === "function" && define.amd) { //AMD
+		define(["TweenLite"], getGlobal);
 	}
 }("ThrowPropsPlugin"));

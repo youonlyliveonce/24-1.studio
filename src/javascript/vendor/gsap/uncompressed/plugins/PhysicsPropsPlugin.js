@@ -1,9 +1,9 @@
 /*!
- * VERSION: 0.1.3
- * DATE: 2014-11-15
- * UPDATES AND DOCS AT: http://www.greensock.com
+ * VERSION: 0.2.1
+ * DATE: 2017-06-19
+ * UPDATES AND DOCS AT: http://greensock.com
  *
- * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * @license Copyright (c) 2008-2017, GreenSock. All rights reserved.
  * PhysicsPropsPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
  * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
  * This work is subject to the software agreement that was issued with your membership.
@@ -35,11 +35,14 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 
 			PhysicsPropsPlugin = _gsScope._gsDefine.plugin({
 				propName: "physicsProps",
-				version: "0.1.3",
+				version: "0.2.1",
 				API: 2,
 
 				//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
-				init: function(target, value, tween) {
+				init: function(target, value, tween, index) {
+					if (typeof(value) === "function") {
+						value = value(target);
+					}
 					this._target = target;
 					this._tween = tween;
 					this._runBackwards = (tween.vars.runBackwards === true);
@@ -54,6 +57,9 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					this._props = [];
 					for (p in value) {
 						curProp = value[p];
+						if (typeof(curProp) === "function") {
+							curProp = curProp(index, target);
+						}
 						if (curProp.velocity || curProp.acceleration) {
 							this._props[cnt++] = new PhysicsProp(target, p, curProp.velocity, curProp.acceleration, curProp.friction, this._stepsPerTimeUnit);
 							this._overwriteProps[cnt] = p;
@@ -88,8 +94,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 									curProp.value += curProp.v;
 								}
 								val = curProp.value + (curProp.v * remainder);
-								if (curProp.r) {
-									val = Math.round(val);
+								if (curProp.m) {
+									val = curProp.m(val, target);
 								}
 								if (curProp.f) {
 									target[curProp.p](val);
@@ -108,8 +114,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 									curProp.v -= curProp.a;
 								}
 								val = curProp.value + (curProp.v * remainder);
-								if (curProp.r) {
-									val = (val + (val < 0 ? -0.5 : 0.5)) | 0;
+								if (curProp.m) {
+									val = curProp.m(val, target);
 								}
 								if (curProp.f) {
 									target[curProp.p](val);
@@ -125,8 +131,8 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 						while (--i > -1) {
 							curProp = this._props[i];
 							val = curProp.start + ((curProp.velocity * time) + (curProp.acceleration * tt));
-							if (curProp.r) {
-								val = Math.round(val);
+							if (curProp.m) {
+								val = curProp.m(val, target);
 							}
 							if (curProp.f) {
 								target[curProp.p](val);
@@ -147,14 +153,16 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 					this._props.splice(i, 1);
 				}
 			}
-			return this._super._kill(lookup);
+			return this._super._kill.call(this, lookup);
 		};
 
-		p._roundProps = function(lookup, value) {
-			var i = this._props.length;
+		p._mod = function(lookup) {
+			var i = this._props.length,
+				val;
 			while (--i > -1) {
-				if (("physicsProps" in lookup) || (this._props[i].p in lookup)) {
-					this._props[i].r = value;
+				val = lookup[this._props[i].p] || lookup.physicsProps;
+				if (typeof(val) === "function") {
+					this._props[i].m = val;
 				}
 			}
 		};
@@ -191,3 +199,16 @@ var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(globa
 		};
 
 }); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
+//export to AMD/RequireJS and CommonJS/Node (precursor to full modular build system coming at a later date)
+(function(name) {
+	"use strict";
+	var getGlobal = function() {
+		return (_gsScope.GreenSockGlobals || _gsScope)[name];
+	};
+	if (typeof(module) !== "undefined" && module.exports) { //node
+		require("../TweenLite.js");
+		module.exports = getGlobal();
+	} else if (typeof(define) === "function" && define.amd) { //AMD
+		define(["TweenLite"], getGlobal);
+	}
+}("PhysicsPropsPlugin"));
