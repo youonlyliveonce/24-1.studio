@@ -11,4 +11,12 @@ fields:
   redirect:
     label: Weiterleitungsziel
     type: text
+  target:
+    label: Seitenziel
+    type: select
+    default: self
+    options:
+      blank: Neue Seite
+      self: Gleiche Seite
+
   navigation: navigation

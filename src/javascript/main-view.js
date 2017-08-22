@@ -216,7 +216,7 @@ var MainView = View.extend({
 
 
 				var local = aTag.host === window.location.host;
-				if (local && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && aTag.getAttribute("target") !== "_blank") {
+				if (local && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && aTag.getAttribute("target") !== "_blank" && aTag.getAttribute("data-type") !== "redirect") {
 						// no link handling via Browser
 						e.preventDefault ? e.preventDefault() : (e.returnValue = false);
 

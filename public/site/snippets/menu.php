@@ -4,7 +4,7 @@
 			<?php if($item->navigation() == "main"): ?>
 				<?php if($item->intendedTemplate() == 'redirect'): ?>
 					<li>
-						<a href="<?= $item->redirect(); ?>" target="_blank"><span><?= $item->title()->html() ?><span></a>
+						<a href="<?= $item->redirect(); ?>" target="_<?= $item->target(); ?>" data-type="redirect"><span><?= $item->title()->html() ?><span></a>
 					</li>
 				<?php else : ?>
 					<li>
