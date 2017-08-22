@@ -15,7 +15,7 @@ gulp.task("favicons", function () {
 			path: "",
 			url: "",
 			display: "standalone",
-			orientation: "portrait",
+			orientation: "landscape",
 			version: "1.0",
 			logging: false,
 			online: false,

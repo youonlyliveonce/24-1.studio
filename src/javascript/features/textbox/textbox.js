@@ -46,7 +46,7 @@ let Textbox = Base.extend({
 			newHeight = document.body.clientWidth/16*9;
 		}
 		this.el.setAttribute("style", "height:"+document.body.clientHeight+"px");
-		console.log(this.textboxbar.clientHeight);
+		// console.log(this.textboxbar.clientHeight);
 		if(this.textboxbar.clientHeight != undefined){
 			let tbh = this.textboxbar.clientHeight;
 			let tbbh = this.textbox.clientHeight;

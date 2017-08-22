@@ -9,10 +9,11 @@
 	<meta name="description" content="<?php echo $site->description()->html() ?>">
 	<meta name="keywords" content="<?php echo $site->keywords()->html() ?>">
 
-	<link rel="shortcut icon" href="/favicon.ico">
-	<link rel="apple-touch-icon-precomposed" href="/ico_29-29.png">
-	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/ico_72-72.png">
-	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/ico_114-114.png">
+	<link rel="shortcut icon" href="/assets/favicons/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" href="/assets/favicons/apple-touch-icon-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/favicons/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/favicons/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/assets/favicons/apple-touch-icon-120x120.png">
 
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
