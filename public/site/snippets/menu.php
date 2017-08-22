@@ -15,11 +15,22 @@
 		<?php endforeach; ?>
 	</ul>
 	<ul class="Navigation__third">
+		<?php foreach ($site->socialnetworks()->toStructure() as $item) : ?>
+			<li class="Navigation--social">
+				<a href="<?= $item->url() ?>"><span class="sr-only"><?= $item->linktext() ?></span></a>
+			</li>
+		<?php endforeach ?>
 		<?php foreach($site->page('home')->children()->visible() as $item): ?>
 			<?php if($item->navigation() == "third"): ?>
-				<li>
-					<a href="/<?= $site->language() ?>/?section=<?= $item->slug(); ?>"><span><?= $item->title()->html() ?><span></a>
-				</li>
+				<?php if($item->intendedTemplate() == 'redirect'): ?>
+					<li>
+						<a href="<?= $item->redirect(); ?>" target="_<?= $item->target(); ?>" data-type="redirect"><span><?= $item->title()->html() ?><span></a>
+					</li>
+				<?php else : ?>
+					<li>
+						<a href="/<?= $site->language() ?>/?section=<?= $item->slug(); ?>"><span><?= $item->title()->html() ?><span></a>
+					</li>
+				<?php endif; ?>
 			<?php endif; ?>
 		<?php endforeach; ?>
 	</ul>

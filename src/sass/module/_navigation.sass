@@ -125,6 +125,109 @@
 							top: 0
 							height: 100%
 	&__third
+		li
+			&.Navigation--social
+				padding: 0 15px !important
+				a
+					color: #333
+					border-bottom: none
+					font-family: fontAwesome
+					font-size: 14px
+					padding: 7px
+					text-decoration: none
+					span
+						position: absolute !important
+						width: 1px
+						height: 1px
+						padding: 0
+						margin: -1px
+						overflow: hidden
+						clip: rect(0, 0, 0, 0)
+						border: 0
+					&:focus
+					&:hover
+						color: #03a6d4
+					&:before
+						background-color: transparent
+						position: relative
+						font-family: fontAwesome
+						content: "\f0c1"
+				a[href*="codepen.io"]
+					&:before
+						content: "\f1cb"
+				a[href*="digg.com"]
+					&:before
+						content: "\f1a6"
+				a[href*="dribbble.com"]
+					&:before
+						content: "\f17d"
+				a[href*="dropbox.com"]
+					&:before
+						content: "\f16b"
+				a[href*="mailto:"]
+					&:before
+						content: "\f0e0"
+				a[href*="facebook.com"]
+					&:before
+						content: "\f09a"
+				a[href*="flickr.com"]
+					&:before
+						content: "\f16e"
+				a[href*="foursquare.com"]
+					&:before
+						content: "\f180"
+				a[href*="github.com"]
+					&:before
+						content: "\f09b"
+				a[href*="plus.google.com"]
+					&:before
+						content: "\f0d5"
+				a[href*="instagram.com"]
+					&:before
+						content: "\f16d"
+				a[href*="linkedin.com"]
+					&:before
+						content: "\f0e1"
+				a[href*="pinterest.com"]
+					&:before
+						content: "\f231"
+				a[href*="getpocket.com"]
+					&:before
+						content: "\f265"
+				a[href*="reddit.com"]
+					&:before
+						content: "\f281"
+				a[href$="/feed/"]
+					&:before
+						content: "\f09e"
+				a[href*="skype.com"]
+					&:before
+						content: "\f17e"
+				a[href*="spotify.com"]
+					&:before
+						content: "\f1bc"
+				a[href*="stumbleupon.com"]
+					&:before
+						content: "\f1a4"
+				a[href*="tumblr.com"]
+					&:before
+						content: "\f173"
+				a[href*="twitch.tv"]
+					&:before
+						content: "\f1e8"
+				a[href*="twitter.com"]
+					&:before
+						content: "\f099"
+				a[href*="vimeo.com"]
+					&:before
+						content: "\f27d"
+				a[href*="wordpress.com"],
+				a[href*="wordpress.org"]
+					&:before
+						content: "\f19a"
+				a[href*="youtube.com"]
+					&:before
+						content: "\f16a"
 		.Navigation &
 			position: absolute
 			top: 90%

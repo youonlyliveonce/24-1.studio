@@ -16,6 +16,7 @@ class Loader {
 		let scope = this;
 		head.ready(document, function() {
 				head.load([	"https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,.css",
+										"https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
 										"/assets/css/app.css",
 										"https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js",
 										"/assets/js/app.js",
