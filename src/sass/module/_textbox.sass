@@ -41,6 +41,10 @@
 		font-style: normal
 	&__body
 		position: relative
+		img
+			max-width: 320px
+			+bp(medium)
+				max-width: inherit
 		table
 			width: 100%
 			margin-bottom: 1em
@@ -68,6 +72,7 @@
 
 		p, table, ul
 			+fontregular()
+			font-size: 0.9em
 			+bp(huge)
 				font-size: 1.0em
 			// +bp(hugest)

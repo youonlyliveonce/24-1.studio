@@ -101,27 +101,34 @@ let Content = PageView.extend({
 			element.view.handleResize();
 		});
 	},
+
 	hookAfterShow: function(){
 
 	},
+
 	handleMouseWheel: function(event){
 		this.activeElement.view.handleMouseWheel(event);
 	},
+
 	handleDownClick: function(event){
 		this.nextSlide();
 	},
+
 	handleSwipeUp: function(event){
 		this.nextSlide();
 	},
+
 	handleSwipeDown: function(event){
 		this.previousSlide();
 	},
+
 	previousSlide: function(){
 		let index  = this.subViews.indexOf(this.activeElement);
 		if(index != 0){
 			CM.App.navigate(`/${this.model.lang}/?section=${this.subViews[index-1].view.el.getAttribute('id')}`);
 		}
 	},
+
 	nextSlide: function(){
 		// nächstes Element ermitteln
 		let index  = this.subViews.indexOf(this.activeElement);
@@ -129,6 +136,7 @@ let Content = PageView.extend({
 			CM.App.navigate(`/${this.model.lang}/?section=${this.subViews[index+1].view.el.getAttribute('id')}`);
 		}
 	},
+
 	onFirstSubViewActiveChange: function(view, value){
 		// if(value) {
 		// 	dom.addClass(document.body, 'Navigation--home');
@@ -136,6 +144,7 @@ let Content = PageView.extend({
 		// 	dom.removeClass(document.body, 'Navigation--home');
 		// }
 	},
+	
 	handleKeyDown: function(event){
 		if(event.key == undefined){
 			switch(event.keyCode){
@@ -152,7 +161,7 @@ let Content = PageView.extend({
 					this.previousSlide();
 					break;
 			}
-		}else {
+		} else {
 			switch(event.key){
 				case 'ArrowLeft' :
 					this.activeElement.view.handleKeyDown("left");
@@ -199,19 +208,15 @@ let Content = PageView.extend({
 		if(lastActiveElement.view && (lastActiveElement.view != this.activeElement.view)){
 			lastActiveElement.view.active = false;
 		}
-
 	},
-
-		cleanup: function(){
-				console.log("cleanup");
-				console.log("this.subViews", this.subViews);
-				_.each(this.subViews, function(item){
-					console.log(item)
-					item.view.remove(true);
-				})
-
+	cleanup: function(){
+		console.log("cleanup");
+		console.log("this.subViews", this.subViews);
+		_.each(this.subViews, function(item){
+			console.log(item)
+			item.view.remove(true);
+		});
 	}
-
 });
 
 export default Content;

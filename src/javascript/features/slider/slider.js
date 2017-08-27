@@ -9,6 +9,7 @@ let Slider = Base.extend({
 		,parentview: ['object', true, function(){ return {} }]
 		,swiper: ['object', true, function(){ return undefined }]
 		,activeindex: ['number', true, -1]
+		,isscrollable: ['boolean', true, true]
 		,activebackground: ['object', true, function(){ return {value:false} }]
 		,paralaxe: ['object', true, function(){ return {value:false} }]
 		,layer: ['array', true, function(){ return [] }]
@@ -122,7 +123,11 @@ let Slider = Base.extend({
 		} else {
 			this.paralaxe.value = false;
 		}
-		this.activebackground.value = this.query('.swiper-slide-active .Slider__background');
+		if(this.query('swiper-slide-active .Slider__background') != undefined){
+			this.activebackground.value = this.query('.swiper-slide-active .Slider__background');
+		} else {
+			this.activebackground.value = false;
+		}
 
 		this.textbox = (this.textboxes[this.activeindex].body == undefined) ? [] : this.textboxes[this.activeindex].body;
 		this.textboxhandler = (this.textboxes[this.activeindex].handler == undefined) ? [] : this.textboxes[this.activeindex].handler;
@@ -173,8 +178,11 @@ let Slider = Base.extend({
 	},
 	handleMouseMove: function(event){
 		if(this.active){
+			// console.log(this);
 			let faktor = event.clientX - document.body.clientWidth/2;
-			TweenMax.set(this.activebackground.value, {x:-0.008*faktor});
+			if(this.activebackground.value != false){
+				TweenMax.set(this.activebackground.value, {x:-0.008*faktor});
+			}
 			if(this.paralaxe.value != false){
 				TweenMax.set(this.paralaxe.value, {css:{'z-index':10, x:-0.016*faktor}});
 			}
