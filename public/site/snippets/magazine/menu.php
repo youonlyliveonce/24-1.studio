@@ -72,9 +72,11 @@
 									<a href="<?= $item->redirect(); ?>" target="_blank"><span><?= $item->title()->html() ?><span></a>
 								</li>
 							<?php else : ?>
-								<li>
-									<a href="/<?= $site->language() ?>/?section=<?= $item->slug(); ?>"><span><?= $item->title()->html() ?><span></a>
-								</li>
+								<?php if((!$item->preview()->exists())||($item->preview()&&($user = $site->user()))||!$item->preview()): ?>
+									<li>
+										<a href="/<?= $site->language() ?>/?section=<?= $item->slug(); ?>"><span><?= $item->title()->html() ?><span></a>
+									</li>
+								<?php endif; ?>
 							<?php endif; ?>
 						<?php endif; ?>
 					<?php endforeach; ?>

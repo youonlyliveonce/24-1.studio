@@ -1,0 +1,5 @@
+  label: Section nur als Preview
+  type: toggle
+  text: yes/no
+  default: no
+  help: Dann wird die Section nur berücksichtigt wenn der User parrallel in kirby eingeloggt ist

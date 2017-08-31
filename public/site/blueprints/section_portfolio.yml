@@ -10,8 +10,12 @@ fields:
     label: Filter und Inhalte definieren sich durch die Unterseiten
     type: headline
   section: section
+  preview: preview
   navigation: navigation
+
   scrollable: scrollable
+
+
   availablefilter:
     label: Verfügbare Filter
     type: tags

@@ -16,9 +16,12 @@
 			<?php
 			} else {
 				$sections = $page->children()->visible();
+
 				foreach($sections as $section):
-						$snippet = implode("/", explode("_", $section->intendedTemplate()));
-						snippet($snippet, array('section' => $section));
+						if((!$section->preview()->exists())||($section->preview()&&($user = $site->user()))||!$section->preview()){
+							$snippet = implode("/", explode("_", $section->intendedTemplate()));
+							snippet($snippet, array('section' => $section));
+						}
 				endforeach;
 			}
 			?>

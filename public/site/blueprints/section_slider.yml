@@ -5,7 +5,9 @@ pages: false
 fields:
   title: title
   section: section
+  preview: preview
   navigation: navigation
+
   animation:
     label: Animation
     type: select
