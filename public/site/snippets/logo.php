@@ -1,5 +1,6 @@
 <div class="Header__logo">
-	<a href="/<?= $site->language() ?>/?section=<?= $site->page('home')->children()->first()->slug(); ?>">
+	<?php $rooturi = ($page->uri() == 'home') ? '' : '/'.$page->uri(); ?>
+	<a href="/<?= $site->language() ?><?= $rooturi ?>/?section=<?= $page->children()->first()->slug(); ?>">
 		<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 			 width="85.039px" height="85.039px" viewBox="0 0 85.039 85.039" enable-background="new 0 0 85.039 85.039" xml:space="preserve">
 		<rect fill="#FFFFFF"/>
