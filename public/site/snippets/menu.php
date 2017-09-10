@@ -18,11 +18,13 @@
 		<?php endforeach; ?>
 	</ul>
 	<ul class="Navigation__third">
-		<?php foreach ($site->socialnetworks()->toStructure() as $item) : ?>
-			<li class="Navigation--social">
-				<a href="<?= $item->url() ?>"><span class="sr-only"><?= $item->linktext() ?></span></a>
-			</li>
-		<?php endforeach ?>
+		<?php if($page->isHomePage()) : ?>
+			<?php foreach ($site->socialnetworks()->toStructure() as $item) : ?>
+				<li class="Navigation--social">
+					<a href="<?= $item->url() ?>"><span class="sr-only"><?= $item->linktext() ?></span></a>
+				</li>
+			<?php endforeach ?>
+		<?php endif; ?>
 		<?php foreach($page->children()->visible() as $item): ?>
 			<?php if($item->navigation() == "third"): ?>
 				<?php if($item->intendedTemplate() == 'redirect'): ?>
