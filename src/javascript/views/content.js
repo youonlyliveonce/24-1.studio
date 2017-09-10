@@ -125,7 +125,7 @@ let Content = PageView.extend({
 	previousSlide: function(){
 		let index  = this.subViews.indexOf(this.activeElement);
 		if(index != 0){
-			CM.App.navigate(`/${this.model.lang}/?section=${this.subViews[index-1].view.el.getAttribute('id')}`);
+			CM.App.navigate(`/${this.model.id}?section=${this.subViews[index-1].view.el.getAttribute('id')}`);
 		}
 	},
 
@@ -133,7 +133,7 @@ let Content = PageView.extend({
 		// nächstes Element ermitteln
 		let index  = this.subViews.indexOf(this.activeElement);
 		if(index != this.subViews.length-1){
-			CM.App.navigate(`/${this.model.lang}/?section=${this.subViews[index+1].view.el.getAttribute('id')}`);
+			CM.App.navigate(`/${this.model.id}?section=${this.subViews[index+1].view.el.getAttribute('id')}`);
 		}
 	},
 
@@ -144,7 +144,7 @@ let Content = PageView.extend({
 		// 	dom.removeClass(document.body, 'Navigation--home');
 		// }
 	},
-	
+
 	handleKeyDown: function(event){
 		if(event.key == undefined){
 			switch(event.keyCode){
@@ -210,10 +210,7 @@ let Content = PageView.extend({
 		}
 	},
 	cleanup: function(){
-		console.log("cleanup");
-		console.log("this.subViews", this.subViews);
 		_.each(this.subViews, function(item){
-			console.log(item)
 			item.view.remove(true);
 		});
 	}
