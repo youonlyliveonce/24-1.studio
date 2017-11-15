@@ -32,7 +32,7 @@
 						<a href="<?= $item->redirect(); ?>" target="_<?= $item->target(); ?>" data-type="redirect"><span><?= $item->title()->html() ?><span></a>
 					</li>
 				<?php else : ?>
-					<?php if((!$item->preview()->exists())||($item->preview()&&($user = $site->user()))||!$item->preview()): ?>
+					<?php if((!$item->preview()->exists())||($item->preview()->bool()&&($user = $site->user()))||!$item->preview()->bool()): ?>
 					<li>
 						<a href="/<?= $site->language() ?><?= $rooturi ?>/?section=<?= $item->slug(); ?>"><span><?= $item->title()->html() ?><span></a>
 					</li>
